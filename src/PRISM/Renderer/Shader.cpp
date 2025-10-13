@@ -1,9 +1,8 @@
-#include <PRISM/Shader.h>
+#include <PRISM/Renderer/Shader.h>
 
 #include <glad/glad.h>
 #include <fmt/core.h>
-
-
+#include <glm/gtc/type_ptr.hpp>
 
 Shader::~Shader()
 {
@@ -16,18 +15,17 @@ bool Shader::Initialize()
     // TODO: Update the messy if statement usage and actually return something if
     // we fail to compile parts
 
-    //C Str Conversion
-    const char* vSource = vertexSource.c_str();
-    const char* fSource = fragmentSource.c_str();
-
+    // C Str Conversion
+    const char *vSource = vertexSource.c_str();
+    const char *fSource = fragmentSource.c_str();
 
     // Create the vertex and fragment shaders and check if the compiled
     unsigned int vertexShader, fragmentShader;
     int success;
     char infoLog[512];
-    
+
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1,  &vSource, NULL);
+    glShaderSource(vertexShader, 1, &vSource, NULL);
     glCompileShader(vertexShader);
 
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
@@ -73,10 +71,32 @@ bool Shader::Initialize()
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
+    FindUniforms();
     return true;
 }
-
+void Shader::FindUniforms()
+{
+    modelLocation = glGetUniformLocation(GetProgramId(), "model");
+    viewLocation = glGetUniformLocation(GetProgramId(), "view");
+    projectionLocation = glGetUniformLocation(GetProgramId(), "projection");
+}
 void Shader::Enable()
 {
     glUseProgram(programId);
+}
+void Shader::UpdateMatrix(const MatrixType type, const glm::mat4 &matrix)
+{
+    switch (type)
+    {
+    case MatrixType::MatrixModel:
+        glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(matrix));
+        break;
+
+    case MatrixType::MatrixView:
+        glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(matrix));
+        break;
+    case MatrixType::MatrixProjection:
+        glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(matrix));
+        break;
+    }
 }
