@@ -1,5 +1,5 @@
 #pragma once
-#include <PRISM/Renderer/Model.h>
+#include <PRISM/Renderer/Mesh.h>
 static std::vector<Vertex> cubeVerts = {
     {{0, 0, 0}, {1, 0, 0, 1}},   // red
     {{1, 0, 0}, {0, 1, 0, 1}},   // green
@@ -25,8 +25,8 @@ static std::vector<unsigned int> cubeIndices = {
     2, 6, 3, 3, 6, 7,
     // Bottom
     1, 0, 4, 4, 5, 1};
-class Cube : public Model
+class Cube : public Mesh
 {
 public:
-    Cube(const glm::vec3 &position) : Model(position, cubeVerts, cubeIndices) {};
+    Cube() : Mesh(cubeVerts, cubeIndices) {};
 };

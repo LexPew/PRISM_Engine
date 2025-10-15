@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.28)
-project(OpenGL LANGUAGES CXX C)
+project(PRISM LANGUAGES CXX C)
 add_executable(${PROJECT_NAME})
+
 
 file(GLOB_RECURSE sources 
 ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
@@ -33,5 +34,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE fmt glm::glm glfw OpenGL::GL )
 #ASSETS
 
 #Copy Shaders to build directory
-file(COPY ${CMAKE_SOURCE_DIR}/shaders DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
     

@@ -1,8 +1,27 @@
-#include <PRISM/Renderer/Model.h>
+#include <PRISM/Renderer/Mesh.h>
 #include <glad/glad.h>
+#include <cmath>
 
+Mesh::Mesh(const std::vector<Vertex> &_vertices, const std::vector<unsigned int> &_indices)
+{
+   Initialize(_vertices, _indices);
+}
 
-Model::Model(const glm::vec3 &_position, const std::vector<Vertex> &_vertices, const std::vector<unsigned int> &_indices)
+Mesh::~Mesh()
+{
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &VCO);
+    glDeleteBuffers(1, &IBO);
+}
+void Mesh::Draw() const
+{
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+}
+
+void Mesh::Initialize(const std::vector<Vertex> &_vertices, const std::vector<unsigned int> &_indices)
 {
     // Generate Buffers
     glGenVertexArrays(1, &VAO);
@@ -10,7 +29,6 @@ Model::Model(const glm::vec3 &_position, const std::vector<Vertex> &_vertices, c
     glGenBuffers(1, &VCO);
     glGenBuffers(1, &IBO);
     // Setup Values
-    position = _position;
     vertices = _vertices;
     indices = _indices;
 
@@ -37,7 +55,6 @@ Model::Model(const glm::vec3 &_position, const std::vector<Vertex> &_vertices, c
 
     // Setup VBO for Colour Data
 
-
     glBindBuffer(GL_ARRAY_BUFFER, VCO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4) * vertices.size(), vertexColours.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void *)0);
@@ -49,18 +66,4 @@ Model::Model(const glm::vec3 &_position, const std::vector<Vertex> &_vertices, c
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(), GL_STATIC_DRAW);
     glBindVertexArray(0);
     // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-}
-
-Model::~Model()
-{
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &VCO);
-    glDeleteBuffers(1, &IBO);
-}
-void Model::Draw() const
-{
-    glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
 }

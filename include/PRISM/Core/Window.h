@@ -8,11 +8,14 @@ private:
     GLFWwindow *window{nullptr};
 
 public:
-    Window(int screenWidth, int screenHeight, const char *title);
+    int screenWidth{0};
+    int screenHeight{0};
+
+    Window(int p_screenWidth, int p_screenHeight, const char *title);
     ~Window();
 
 
-    GLFWwindow *GetWindow() { return window; };
+    GLFWwindow *GetGlfwWindow() { return window; };
 
     void Clear();
     void PollEvents();

@@ -4,8 +4,8 @@
 
 #include <PRISM/Renderer/Renderer.h>
 #include <PRISM/Core/Window.h>
-#include <PRISM/Renderer/Camera.h>
-
+#include <PRISM/Engine/CameraEntity.h>
+#include <PRISM/Core/Input/Input.h>
 #include <memory>
 //App Is Responsible for managing PRISM app lifecycle
 //NOTE: App should never really have to touch raw opengl use wrappers!
@@ -13,8 +13,9 @@ class App
 {
 private:
     std::shared_ptr<Window> window{nullptr};
-    std::shared_ptr<Camera> camera{nullptr};
+    std::shared_ptr<CameraEntity> camera{nullptr};
     std::unique_ptr<Renderer> renderer{nullptr};
+    Input input;
 
     int screenWidth = 800.0f;
     int screenHeight = 600.0f;

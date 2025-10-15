@@ -1,9 +1,11 @@
 #include <glad/glad.h>
 #include <PRISM/Core/Window.h>
 #include <fmt/core.h>
-
-Window::Window(int screenWidth, int screenHeight, const char *title)
+#include <PRISM/Renderer/RenderSettings.h>
+Window::Window(int p_screenWidth, int p_screenHeight, const char *title)
 {
+    screenWidth = p_screenWidth;
+    screenHeight = p_screenHeight;
     // Try init GLFW
     if (!glfwInit())
     {
@@ -14,7 +16,7 @@ Window::Window(int screenWidth, int screenHeight, const char *title)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    
+
     window = glfwCreateWindow(screenWidth, screenHeight, title, nullptr, nullptr);
     if (!window)
     {
@@ -26,8 +28,6 @@ Window::Window(int screenWidth, int screenHeight, const char *title)
 
     // Set Resize
     glfwSetWindowSizeCallback(window, ResizeCallback);
-
-
 }
 
 Window::~Window()
@@ -38,10 +38,24 @@ Window::~Window()
     }
     glfwTerminate();
 }
+
 void Window::Clear()
 {
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // Clear screen colour to colour define in render settings
+    glClearColor(
+        RenderSettings::clearColor.r,
+        RenderSettings::clearColor.g,
+        RenderSettings::clearColor.b,
+        RenderSettings::clearColor.z);
+
+    // Change mask depending on whether we are testing for depth
+    GLbitfield mask = GL_COLOR_BUFFER_BIT;
+
+    if (RenderSettings::testDepth)
+    {
+        mask |= GL_DEPTH_BUFFER_BIT;
+    }
+    glClear(mask);
 }
 
 void Window::PollEvents()
@@ -60,5 +74,12 @@ void Window::SwapBuffers()
 
 void Window::ResizeCallback(GLFWwindow *window, int width, int height)
 {
+    // I dont like this hacky way but okay
+    auto appWindow = static_cast<Window *>(glfwGetWindowUserPointer(window));
+    if (appWindow)
+    {
+        appWindow->screenWidth = width;
+        appWindow->screenHeight = height;
+    }
     glViewport(0, 0, width, height);
 }
