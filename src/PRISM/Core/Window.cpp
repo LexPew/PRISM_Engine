@@ -5,7 +5,7 @@
 
 
 Window *Window::instance = nullptr;
-// TODO: UPDATE THIS TO USE BETTE THAN RUNTIME ERROR AND SORT INCLUDES ETC
+// TODO: UPDATE THIS TO USE BETTE THAN RUNTIME ERROR AND SORT INCLUDES ETC, also add comments
 Window::Window(int p_screenWidth, int p_screenHeight, const char *title)
 {
 
