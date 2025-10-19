@@ -3,10 +3,10 @@
 #include <fmt/core.h>
 #include <GLFW/glfw3.h>
 #include <PRISM/Core/Input/Input.h>
-
+#include <PRISM/Core/Window.h>
 void OribitalCameraEntity::Start()
 {
-    glfwSetInputMode(Renderer::Instance->GetWindow()->GetGlfwWindow(),
+    glfwSetInputMode(Window::Get()->GetGlfwWindow(),
                      GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 void OribitalCameraEntity::Update(float deltaTime)

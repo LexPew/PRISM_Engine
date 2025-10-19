@@ -3,9 +3,7 @@
 #include <PRISM/Engine/OrbitalCameraEntity.h>
 #include <PRISM/Engine/ModelEntity.h>
 #include <PRISM/Utils/PMath.h>
-#include <fmt/core.h>
 #include <PRISM/Examples/RubiksCubeExample.h>
-#include <PRISM/Utils/FLoader.h>
 #include <PRISM/Utils/FLoader.h>
 std::shared_ptr<OribitalCameraEntity> camera;
 void CubeScene::Start()
@@ -29,13 +27,17 @@ void CubeScene::Start()
         float rand = PMath::RandomRange(0.0f, 1.0f);
         // Randomly choose between cubeMesh, cubeMesh2, and objMesh
         if (rand <= 0.33f)
+        {
             newCube->SetMesh(cubeMesh); // Pass by reference, copy by value
+        }
         else if (rand < 0.66f)
+        {
             newCube->SetMesh(cubeMesh2); // Pass by reference, copy by value
+        }
         else
+        {
             newCube->SetMesh(objMesh); // Pass by reference, copy by value
-
-        // snewCube->SetMesh(objMesh); // Pass by reference, copy by value
+        }
 
         newCube->transform.position = {rX, rY, rZ};
         newCube->transform.scale = {1, 1, 1};

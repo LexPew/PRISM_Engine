@@ -1,12 +1,12 @@
 #include <PRISM/Core/Input/Mouse.h>
 #include <PRISM/Renderer/Renderer.h>
 #include <PRISM/Core/Input/Input.h>
-
+#include <PRISM/Core/Window.h>
 
 
 Mouse::Mouse()
 {
-    glfwSetScrollCallback(Renderer::Instance->GetWindow()->GetGlfwWindow(), ScrollCallback);
+    glfwSetScrollCallback(Window::Get()->GetGlfwWindow(), ScrollCallback);
 }
 
 void Mouse::Update(GLFWwindow *window)

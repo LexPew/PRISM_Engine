@@ -3,6 +3,6 @@
 #include <fmt/core.h>
 void ModelEntity::Draw()
 {
-    Renderer::Instance->Draw(mesh, transform.position, transform.rotation, transform.scale);
+    Renderer::Get()->Draw(mesh, transform.position, transform.rotation, transform.scale);
 
 }

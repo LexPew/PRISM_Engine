@@ -1,45 +1,44 @@
 #include <PRISM/App.h>
-#include <PRISM/Utils/FLoader.h>
+
 #include <PRISM/Utils/PMath.h>
-#include <PRISM/Renderer/Shader.h>
 #include <PRISM/Examples/CubeScene.h>
-#include <fmt/core.h>
 
-#include <PRISM/Engine/ModelEntity.h>
-#include <PRISM/Engine/CameraEntity.h>
-#include <PRISM/Renderer/Cube.h>
-
-
-
-
-// Variables
-
-std::unique_ptr<Shader> defaultShader = nullptr;
-bool App::Run()
+bool App::Init()
 {
+    // Initialize Everything
+
     // 1. Create the window first
-    window = std::make_shared<Window>(screenWidth, screenHeight, "PRISM");
+    window = std::make_shared<Window>(screenWidth, screenHeight, " // P.R.I.S.M //");
 
     // 2. Load GL
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        fmt::println("Failed to load GLAD");
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        // TODO: Add Error Printing
+        // fmt::println("Failed to load GLAD");
         return false;
     }
 
-    // 3. Initialize renderer
-    renderer = std::make_unique<Renderer>(window);
+    // 3. Initialize Renderer
+    renderer = std::make_unique<Renderer>();
 
-    // 4. Initialize input system 
+    // 4. Initialize Input System
     input = std::make_unique<Input>();
 
-
-    // 6. Initialize math, scenes, etc.#
+    // 6. Initialize math utils
     float randomSeed = (float)glfwGetTime();
     randomSeed += (float)clock();
     PMath::InitializeRandom(randomSeed);
+    return true;
+}
 
-    // 7. Run main loop
+bool App::Run()
+{
+    if (!Init())
+    {
+        return false;
+    }
     Loop();
+    //TODO: Maybe shutdown function eventually
     return true;
 }
 
@@ -47,17 +46,15 @@ void App::Loop()
 {
 
     CubeScene scene;
-        scene.Start();
-         double lastTime = glfwGetTime();
+    scene.Start();
+    double lastTime = glfwGetTime();
 
     while (!window->ShouldClose())
     {
         double currentTime = glfwGetTime();
         float deltaTime = float(currentTime - lastTime);
         lastTime = currentTime;
-  
 
- 
         // Rendering
 
         renderer->BeginFrame();
@@ -68,9 +65,8 @@ void App::Loop()
 
         scene.Draw();
 
-    
         renderer->EndFrame();
-            input->EndFrame();
-    
+        input->EndFrame();
     }
+
 }

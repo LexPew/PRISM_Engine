@@ -22,12 +22,9 @@ private:
     float fov = 45.0f;
 
 public:
+    bool Init();
     bool Run();
 
 private:
     void Loop();
-    void CreateAndEnableDefaultShaders();
-    void InitializeMatrices();
-
-
 };

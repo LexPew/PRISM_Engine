@@ -1,0 +1,18 @@
+Each utility or high level class like renderer or window should follow this structure
+
+class NAME
+{
+private:
+    static NAME *instance;
+
+public:
+    static NAME *Get() {return instance;}
+    Window()
+    {
+        if(instance != nullptr)
+        {
+            //Throw runtime error
+        };
+    };
+    
+}
