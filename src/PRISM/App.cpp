@@ -17,31 +17,28 @@
 std::unique_ptr<Shader> defaultShader = nullptr;
 bool App::Run()
 {
-    Mouse mouse;
-    // Create Window
-    try
-    {
-        window = std::make_shared<Window>(screenWidth, screenHeight, "PRISM");
-    }
-    catch (bool e)
-    {
+    // 1. Create the window first
+    window = std::make_shared<Window>(screenWidth, screenHeight, "PRISM");
 
-        return false;
-    }
-
-    // Try load glad
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
+    // 2. Load GL
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         fmt::println("Failed to load GLAD");
         return false;
     }
 
-    // Initialize the renderer
-    renderer = std::make_unique<Renderer>( window);
+    // 3. Initialize renderer
+    renderer = std::make_unique<Renderer>(window);
 
-    //Init PMath
-    PMath::InitializeRandom((float)glfwGetTime());
+    // 4. Initialize input system 
+    input = std::make_unique<Input>();
 
+
+    // 6. Initialize math, scenes, etc.#
+    float randomSeed = (float)glfwGetTime();
+    randomSeed += (float)clock();
+    PMath::InitializeRandom(randomSeed);
+
+    // 7. Run main loop
     Loop();
     return true;
 }
@@ -59,16 +56,21 @@ void App::Loop()
         float deltaTime = float(currentTime - lastTime);
         lastTime = currentTime;
   
-        // Logic
-        
-        scene.Update(deltaTime);
+
  
         // Rendering
 
         renderer->BeginFrame();
+
+        // Logic
+        input->Update(window->GetGlfwWindow());
+        scene.Update(deltaTime);
+
         scene.Draw();
 
     
         renderer->EndFrame();
+            input->EndFrame();
+    
     }
 }

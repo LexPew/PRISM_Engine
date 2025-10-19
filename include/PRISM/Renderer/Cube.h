@@ -1,5 +1,6 @@
 #pragma once
 #include <PRISM/Renderer/Mesh.h>
+//TODO: DONT USE FUCKING STATIC MEMBERS YOUD DIP
 static std::vector<Vertex> cubeVerts = {
     {{0, 0, 0}, {1, 0, 0, 1}},   // red
     {{1, 0, 0}, {0, 1, 0, 1}},   // green

@@ -19,10 +19,13 @@ public:
 
     glm::vec2 GetPosition(){return lastMousePosition;};
     bool GetMouseButtonDown(int mouseButton);
-    glm::vec2 GetMouseDelta(){return mouseDelta;};
-
+    const glm::vec2& GetMouseDelta() const {return mouseDelta; };
+    void SetScrollDelta(float delta){scrollDelta = delta;};
+    float GetScrollDelta(){return scrollDelta;};
+    void EndFrame();
 private:
     //Calculates the mouse delta
     void CalculateMouseDelta(GLFWwindow *window);
     void UpdateMouseButtons(GLFWwindow*window);
+    static void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 };

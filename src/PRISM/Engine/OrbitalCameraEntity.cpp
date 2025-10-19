@@ -2,6 +2,7 @@
 #include <PRISM/Renderer/Renderer.h>
 #include <fmt/core.h>
 #include <GLFW/glfw3.h>
+#include <PRISM/Core/Input/Input.h>
 
 void OribitalCameraEntity::Start()
 {
@@ -10,47 +11,52 @@ void OribitalCameraEntity::Start()
 }
 void OribitalCameraEntity::Update(float deltaTime)
 {
-
-    double currentX, currentY;
-    glfwGetCursorPos(Renderer::Instance->GetWindow()->GetGlfwWindow(), &currentX, &currentY);
-    glm::vec2 currentMousePos{currentX, currentY};
-    glm::vec2 delta = lastMousePos - currentMousePos;
-
-    lastMousePos = currentMousePos;
+    ScrollSpeed();
+    const glm::vec2 &delta = Input::Instance->GetMouse().GetMouseDelta();
 
     transform.rotation.y -= delta.x * turnSpeed * deltaTime;
     transform.rotation.x += delta.y * turnSpeed * deltaTime;
 
-
-
-    glm::vec3 move(0,0,0);
-    if (glfwGetKey(Renderer::Instance->GetWindow()->GetGlfwWindow(), GLFW_KEY_W))
+    float currentMoveSpeed = moveSpeed;
+    if (Input::Instance->IsKeyPressed(GLFW_KEY_LEFT_SHIFT))
+    {
+        currentMoveSpeed = currentMoveSpeed * sprintMultiplier;
+    }
+    glm::vec3 move(0, 0, 0);
+    if (Input::Instance->IsKeyPressed(GLFW_KEY_W))
     {
         move.z += 1;
     }
-    else if (glfwGetKey(Renderer::Instance->GetWindow()->GetGlfwWindow(), GLFW_KEY_S))
+    else if (Input::Instance->IsKeyPressed(GLFW_KEY_S))
     {
         move.z -= 1;
     }
 
-        if (glfwGetKey(Renderer::Instance->GetWindow()->GetGlfwWindow(), GLFW_KEY_A))
+    if (Input::Instance->IsKeyPressed(GLFW_KEY_A))
     {
         move.x -= 1;
     }
-    else if (glfwGetKey(Renderer::Instance->GetWindow()->GetGlfwWindow(), GLFW_KEY_D))
+    else if (Input::Instance->IsKeyPressed(GLFW_KEY_D))
     {
         move.x += 1;
     }
     move = glm::normalize(move);
-    move = move * moveSpeed * deltaTime;
-if (glm::length(move) > 0.0f)
-{
-    move = glm::normalize(move);
+    move = move * currentMoveSpeed * deltaTime;
+    if (glm::length(move) > 0.0f)
+    {
+        move = glm::normalize(move);
 
-    glm::vec3 forward = transform.forward();
-    glm::vec3 right   = transform.right();
+        glm::vec3 forward = transform.forward();
+        glm::vec3 right = transform.right();
 
-    transform.position += (forward * move.z + right * move.x) * moveSpeed * deltaTime;
-}
+        transform.position += (forward * move.z + right * move.x) * currentMoveSpeed * deltaTime;
+    }
     CameraEntity::Update(deltaTime);
+}
+
+void OribitalCameraEntity::ScrollSpeed()
+{
+    fmt::println("Mouse Delta {}", Input::Instance->GetMouse().GetScrollDelta());
+    moveSpeed += Input::Instance->GetMouse().GetScrollDelta();
+    moveSpeed = std::max(1.0f, moveSpeed);
 }
