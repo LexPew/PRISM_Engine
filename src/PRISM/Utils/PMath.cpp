@@ -3,7 +3,7 @@
 
 float PMath::RandomRange(float min, float max)
 {
-    //Rand() % num = 0 to (num - 1)
-    int range = static_cast<int>(max - min + 1.0f);
-    return static_cast<float>(rand() % range) + min;
+    //TODO: Read up on how this actually works thank you chatgpt for this
+    float t = static_cast<float>(rand()) / static_cast<float>(RAND_MAX); // [0, 1)
+    return min + t * (max - min);  // Scale to [min, max)
 }

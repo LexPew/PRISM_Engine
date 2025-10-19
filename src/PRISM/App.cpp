@@ -2,7 +2,9 @@
 
 #include <PRISM/Utils/PMath.h>
 #include <PRISM/Examples/CubeScene.h>
+#include <PRISM/Examples/TerrainScene.h>
 
+//TODO:REmove once done testing
 bool App::Init()
 {
     // Initialize Everything
@@ -37,6 +39,7 @@ bool App::Run()
     {
         return false;
     }
+
     Loop();
     //TODO: Maybe shutdown function eventually
     return true;
@@ -45,7 +48,8 @@ bool App::Run()
 void App::Loop()
 {
 
-    CubeScene scene;
+    //CubeScene scene;
+    TerrainScene scene;
     scene.Start();
     double lastTime = glfwGetTime();
 

@@ -1,6 +1,6 @@
 #include <PRISM/Engine/OrbitalCameraEntity.h>
 #include <PRISM/Renderer/Renderer.h>
-#include <fmt/core.h>
+
 #include <GLFW/glfw3.h>
 #include <PRISM/Core/Input/Input.h>
 #include <PRISM/Core/Window.h>
@@ -56,7 +56,7 @@ void OribitalCameraEntity::Update(float deltaTime)
 
 void OribitalCameraEntity::ScrollSpeed()
 {
-    fmt::println("Mouse Delta {}", Input::Instance->GetMouse().GetScrollDelta());
+   
     moveSpeed += Input::Instance->GetMouse().GetScrollDelta();
     moveSpeed = std::max(1.0f, moveSpeed);
 }

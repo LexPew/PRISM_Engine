@@ -5,6 +5,8 @@
 #include <PRISM/Utils/PMath.h>
 #include <PRISM/Examples/RubiksCubeExample.h>
 #include <PRISM/Utils/FLoader.h>
+
+#include <PRISM/Examples/TerrainGenerator.h>
 std::shared_ptr<OribitalCameraEntity> camera;
 void CubeScene::Start()
 {
@@ -16,6 +18,7 @@ void CubeScene::Start()
     static RubiksCubeExample cubeMesh; // <-- static ensures it stays alive for the whole program
     static Cube cubeMesh2;
     static Mesh objMesh = FLoader::LoadObject("/media/sharedrive/Year_3/3D_Graphics/Learning_Material/PRISM_Renderer/Apple.obj");
+
     for (int i = 0; i < 10; i++)
     {
         auto newCube = std::make_shared<ModelEntity>();
