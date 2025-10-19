@@ -17,19 +17,54 @@
 class Renderer
 {
 private:
+    /**
+     * @brief The currently active shader used for rendering.
+     */
     std::unique_ptr<Shader> currentShader;
-    static Renderer *instance;
+
+    /**
+     * @brief Singleton instance of the Renderer.
+     */
+    static Renderer* instance;
 
 public:
-    static Renderer *Get() { return instance; }
+    /**
+     * @brief Retrieves the global Renderer instance.
+     * @return Pointer to the active Renderer.
+     */
+    static Renderer* Get() { return instance; }
 
+    /**
+     * @brief Constructs the Renderer and initializes rendering resources.
+     */
     Renderer();
 
-    void SendCameraMatrices(const CameraEntity *camera);
+    /**
+     * @brief Updates the active shader with the latest camera matrices.
+     * @param camera Pointer to the camera entity used for projection and view matrices.
+     */
+    void SendCameraMatrices(const CameraEntity* camera);
 
-    void BeginFrame(); // Start of a frame
+    /**
+     * @brief Begins a new frame.
+     *
+     * Polls window events and clears the screen. This should be called before any draw calls.
+     */
+    void BeginFrame();
 
-    void Draw(const Mesh &model, const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale);
+    /**
+     * @brief Draws a mesh with the specified transformation.
+     * @param model Reference to the mesh to draw.
+     * @param position World-space position of the mesh.
+     * @param rotation Euler rotation (in degrees).
+     * @param scale Scale factor of the mesh.
+     */
+    void Draw(const Mesh& model, const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale);
 
-    void EndFrame(); // End of a frame
+    /**
+     * @brief Ends the current frame.
+     *
+     * Swaps display buffers. This should be called after all draw calls for the frame.
+     */
+    void EndFrame();
 };
