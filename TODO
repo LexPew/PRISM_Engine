@@ -1,8 +1,13 @@
 List Of Tasks
 
 -Add SceneManager
--Add ImGui
+
 -Add Proper Shutdown Procedure
 -Add Terrain Height Sampling from HeightMaps
 -Add Scaling, Frequency etc to it aswell
+-Redo input to be static, less flexible but simpler
 
+DONE:
+
+-Add ImGui - DONE
+-Add Camera Lock Feature so that when you press escape it will unlock camera but once you click on again it will unlock - DONE

@@ -22,15 +22,37 @@ FetchContent_Declare(
     glm
     GIT_REPOSITORY https://github.com/g-truc/glm.git
     GIT_TAG 0af55cc)
-FetchContent_MakeAvailable(fmt glm)
+FetchContent_Declare(
+    imgui
+    GIT_REPOSITORY https://github.com/ocornut/imgui.git
+    GIT_TAG v1.92.4
+)
+FetchContent_MakeAvailable(imgui)
+
+set(IMGUI_DIR ${imgui_SOURCE_DIR})
+target_sources(${PROJECT_NAME} PRIVATE
+    ${IMGUI_DIR}/imgui.cpp
+    ${IMGUI_DIR}/imgui_draw.cpp
+    ${IMGUI_DIR}/imgui_tables.cpp
+    ${IMGUI_DIR}/imgui_widgets.cpp
+        ${IMGUI_DIR}/imgui_demo.cpp
+    ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
+    ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
+
+)
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${IMGUI_DIR}
+    ${IMGUI_DIR}/backends
+)
+FetchContent_MakeAvailable(fmt glm )
 #GLFW
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/include/glfw)
 
 #OpenGL
 find_package(OpenGL REQUIRED)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE fmt glm::glm glfw OpenGL::GL )
-
+target_link_libraries(${PROJECT_NAME} PRIVATE fmt glm::glm glfw OpenGL::GL)
 #ASSETS
 
 #Copy Shaders to build directory

@@ -4,18 +4,24 @@
 #include <GLFW/glfw3.h>
 #include <PRISM/Core/Input/Input.h>
 #include <PRISM/Core/Window.h>
+#include <fmt/core.h>
 void OribitalCameraEntity::Start()
 {
-    glfwSetInputMode(Window::Get()->GetGlfwWindow(),
-                     GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    Input::Instance->SetCursorLockState(true);
 }
 void OribitalCameraEntity::Update(float deltaTime)
 {
     ScrollSpeed();
     const glm::vec2 &delta = Input::Instance->GetMouse().GetMouseDelta();
 
-    transform.rotation.y -= delta.x * turnSpeed * deltaTime;
-    transform.rotation.x += delta.y * turnSpeed * deltaTime;
+    transform.rotation.y += delta.x * turnSpeed * deltaTime;
+    transform.rotation.x -= delta.y * turnSpeed * deltaTime;
+
+    if (Input::Instance->GetMouse().GetMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT))
+    {
+
+        Input::Instance->SetCursorLockState(true);
+    }
 
     float currentMoveSpeed = moveSpeed;
     if (Input::Instance->IsKeyPressed(GLFW_KEY_LEFT_SHIFT))
@@ -56,7 +62,7 @@ void OribitalCameraEntity::Update(float deltaTime)
 
 void OribitalCameraEntity::ScrollSpeed()
 {
-   
+
     moveSpeed += Input::Instance->GetMouse().GetScrollDelta();
     moveSpeed = std::max(1.0f, moveSpeed);
 }

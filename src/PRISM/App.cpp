@@ -1,10 +1,17 @@
 #include <PRISM/App.h>
 
+//PRISM Includes
 #include <PRISM/Utils/PMath.h>
 #include <PRISM/Examples/CubeScene.h>
 #include <PRISM/Examples/TerrainScene.h>
 
-//TODO:REmove once done testing
+//ImGui Includes
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
+
+//TODO:Remove scene stuff once done testing & cleanup
 bool App::Init()
 {
     // Initialize Everything
@@ -30,6 +37,17 @@ bool App::Init()
     float randomSeed = (float)glfwGetTime();
     randomSeed += (float)clock();
     PMath::InitializeRandom(randomSeed);
+
+    //Initialize ImGui
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+
+    ImGui_ImplGlfw_InitForOpenGL(window.get()->GetGlfwWindow(), true);
+    ImGui_ImplOpenGL3_Init();
+
     return true;
 }
 
@@ -63,11 +81,21 @@ void App::Loop()
 
         renderer->BeginFrame();
 
+
+        //ImGui New Frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        ImGui::ShowDemoWindow();
         // Logic
         input->Update(window->GetGlfwWindow());
         scene.Update(deltaTime);
 
         scene.Draw();
+
+        //ImGui Render
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         renderer->EndFrame();
         input->EndFrame();
