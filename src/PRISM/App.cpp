@@ -4,7 +4,8 @@
 #include <PRISM/Utils/PMath.h>
 #include <PRISM/Examples/CubeScene.h>
 #include <PRISM/Examples/TerrainScene.h>
-
+#include <PRISM/Core/Input/Input.h>
+#include <PRISM/Engine/SceneManager.h>
 //ImGui Includes
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -63,11 +64,10 @@ bool App::Run()
 
 void App::Loop()
 {
-
-    //CubeScene scene;
-    TerrainScene scene;
-    scene.Start();
     double lastTime = glfwGetTime();
+
+    SceneManager::Get().SetScene(std::make_shared<CubeScene>());
+    SceneManager::Get().Start();
 
     while (!window->ShouldClose())
     {
@@ -84,12 +84,12 @@ void App::Loop()
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        ImGui::ShowDemoWindow();
+        //ImGui::ShowDemoWindow();
         // Logic
         Input::Get().Update(window->GetGlfwWindow());
-        scene.Update(deltaTime);
+        SceneManager::Get().Update(deltaTime);
 
-        scene.Draw();
+        SceneManager::Get().Draw();
 
         //ImGui Render
         ImGui::Render();
