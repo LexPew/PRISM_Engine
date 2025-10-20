@@ -5,16 +5,22 @@ class Input
 {
 private:
     Mouse mouse;
-    bool cursorLocked { false};
+    bool cursorLocked{false};
+
+    Input(){};
 
 public:
-    static Input *Instance;
-    Input();
+    static Input &Get()
+    {
+        static Input instance;
+        return instance;
+    }
+
     void Update(GLFWwindow *window)
     {
         if (IsKeyPressed(GLFW_KEY_ESCAPE))
         {
-            //Set mouse cursor to unlock 
+            // Set mouse cursor to unlock
             SetCursorLockState(false);
         }
         mouse.Update(window);

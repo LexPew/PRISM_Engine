@@ -8,14 +8,14 @@
 
 void OrbitalCameraEntity::Start()
 {
-    Input::Instance->SetCursorLockState(true);
+    Input::Get().SetCursorLockState(true);
 }
 
 void OrbitalCameraEntity::Update(float deltaTime)
 {
     ScrollSpeed();
 
-    const glm::vec2& delta = Input::Instance->GetMouse().GetMouseDelta();
+    const glm::vec2& delta = Input::Get().GetMouse().GetMouseDelta();
 
     // Update camera rotation
     transform.rotation.y += delta.x * turnSpeed * deltaTime;
@@ -23,20 +23,20 @@ void OrbitalCameraEntity::Update(float deltaTime)
     transform.rotation.x = PMath::Clamp(transform.rotation.x, -89.9f, 89.9f);
 
     // Lock cursor on left click
-    if (Input::Instance->GetMouse().GetMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT))
-        Input::Instance->SetCursorLockState(true);
+    if (Input::Get().GetMouse().GetMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT))
+        Input::Get().SetCursorLockState(true);
 
     // Movement speed (handle sprint)
     float currentMoveSpeed = moveSpeed;
-    if (Input::Instance->IsKeyPressed(GLFW_KEY_LEFT_SHIFT))
+    if (Input::Get().IsKeyPressed(GLFW_KEY_LEFT_SHIFT))
         currentMoveSpeed *= sprintMultiplier;
 
     // Build movement direction
     glm::vec3 move(0.0f);
-    if (Input::Instance->IsKeyPressed(GLFW_KEY_W)) move.z += 1.0f;
-    if (Input::Instance->IsKeyPressed(GLFW_KEY_S)) move.z -= 1.0f;
-    if (Input::Instance->IsKeyPressed(GLFW_KEY_A)) move.x -= 1.0f;
-    if (Input::Instance->IsKeyPressed(GLFW_KEY_D)) move.x += 1.0f;
+    if (Input::Get().IsKeyPressed(GLFW_KEY_W)) move.z += 1.0f;
+    if (Input::Get().IsKeyPressed(GLFW_KEY_S)) move.z -= 1.0f;
+    if (Input::Get().IsKeyPressed(GLFW_KEY_A)) move.x -= 1.0f;
+    if (Input::Get().IsKeyPressed(GLFW_KEY_D)) move.x += 1.0f;
 
     if (glm::length(move) > 0.0f)
     {
@@ -53,6 +53,6 @@ void OrbitalCameraEntity::Update(float deltaTime)
 
 void OrbitalCameraEntity::ScrollSpeed()
 {
-    moveSpeed += Input::Instance->GetMouse().GetScrollDelta();
+    moveSpeed += Input::Get().GetMouse().GetScrollDelta();
     moveSpeed = std::max(1.0f, moveSpeed);
 }

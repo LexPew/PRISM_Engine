@@ -15,7 +15,7 @@ private:
     std::shared_ptr<Window> window{nullptr};
     std::shared_ptr<CameraEntity> camera{nullptr};
     std::unique_ptr<Renderer> renderer{nullptr};
-    std::unique_ptr<Input> input{nullptr};
+
 
     int screenWidth = 800.0f;
     int screenHeight = 600.0f;

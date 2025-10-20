@@ -2,11 +2,6 @@
 #include <GLFW/glfw3.h>
 #include <PRISM/Core/Window.h>
 
-Input *Input::Instance = nullptr;
-Input::Input()
-{
-    Instance = this;
-}
 void Input::SetCursorLockState(bool lock)
 {
     cursorLocked = lock;

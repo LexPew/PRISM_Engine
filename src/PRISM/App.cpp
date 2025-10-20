@@ -30,8 +30,6 @@ bool App::Init()
     // 3. Initialize Renderer
     renderer = std::make_unique<Renderer>();
 
-    // 4. Initialize Input System
-    input = std::make_unique<Input>();
 
     // 6. Initialize math utils
     float randomSeed = (float)glfwGetTime();
@@ -88,7 +86,7 @@ void App::Loop()
         ImGui::NewFrame();
         ImGui::ShowDemoWindow();
         // Logic
-        input->Update(window->GetGlfwWindow());
+        Input::Get().Update(window->GetGlfwWindow());
         scene.Update(deltaTime);
 
         scene.Draw();
@@ -98,7 +96,7 @@ void App::Loop()
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         renderer->EndFrame();
-        input->EndFrame();
+        Input::Get().EndFrame();
     }
 
 }

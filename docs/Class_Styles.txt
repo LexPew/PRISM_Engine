@@ -1,18 +1,38 @@
-Each utility or high level class like renderer or window should follow this structure
+🧩 Engine Utility Class Structure — Meyers Singleton Pattern
+
+In this engine, each high-level utility class (e.g. Renderer, Window, SceneManager, AudioManager) should follow the Meyers Singleton pattern.
+
+This approach ensures:
+
+Only one global instance exists.
+
+Thread-safe lazy initialization.
+
+No manual memory management.
+
+Cleaner and more modern C++ design.
+
+✅ General Structure
+#pragma once
+#include <stdexcept>
 
 class NAME
 {
 private:
-    static NAME *instance;
+    // Private constructor prevents direct instantiation
+    NAME();
+
 
 public:
-    static NAME *Get() {return instance;}
-    Window()
+    // Meyers Singleton access function
+    static NAME& Get()
     {
-        if(instance != nullptr)
-        {
-            //Throw runtime error
-        };
-    };
-    
-}
+        static NAME instance; // Created once, thread-safe in C++11+
+        return instance;
+    }
+
+    // Example methods
+    void Initialize();
+    void Update();
+    void Shutdown();
+};

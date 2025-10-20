@@ -42,7 +42,7 @@ void Mouse::CalculateMouseDelta(GLFWwindow* window)
 
 void Mouse::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    Input::Instance->GetMouse().SetScrollDelta(static_cast<float>(yoffset));
+    Input::Get().GetMouse().SetScrollDelta(static_cast<float>(yoffset));
 }
 
 void Mouse::EndFrame()
