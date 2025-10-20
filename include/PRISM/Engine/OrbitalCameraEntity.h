@@ -3,7 +3,7 @@
 #include <glm/vec2.hpp>
 
 // TODO: Add a way to exit from captured mouse pos on escp and reenter when clicking
-class OribitalCameraEntity : public CameraEntity
+class OrbitalCameraEntity : public CameraEntity
 {
 private:
     glm::vec2 lastMousePos{0, 0};

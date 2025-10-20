@@ -6,7 +6,7 @@
 
 void TerrainScene::Start()
 {
-    auto camera = std::make_shared<OribitalCameraEntity>();
+    auto camera = std::make_shared<OrbitalCameraEntity>();
     camera->transform.position = {0, 0, 15.0f};
     AddEntity(camera);
 

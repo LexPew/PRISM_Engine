@@ -15,7 +15,7 @@ struct Transform
         forward.x = cos(pitch) * sin(yaw);
         forward.y = sin(pitch);
         forward.z = -cos(pitch) * cos(yaw);
-
+        
         return forward;
     }
 

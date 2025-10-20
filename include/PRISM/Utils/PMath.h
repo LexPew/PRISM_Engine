@@ -8,5 +8,5 @@ class PMath
 public:
     static void InitializeRandom(float random) { srand(random); };
     static float RandomRange(float min, float max);
-
+    static float Clamp(float value, float min, float max);
 };

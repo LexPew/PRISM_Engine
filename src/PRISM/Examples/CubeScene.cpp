@@ -7,10 +7,10 @@
 #include <PRISM/Utils/FLoader.h>
 
 #include <PRISM/Examples/TerrainGenerator.h>
-std::shared_ptr<OribitalCameraEntity> camera;
+std::shared_ptr<OrbitalCameraEntity> camera;
 void CubeScene::Start()
 {
-    camera = std::make_shared<OribitalCameraEntity>();
+    camera = std::make_shared<OrbitalCameraEntity>();
     camera->transform.position = {0, 0, 15.0f};
     AddEntity(camera);
 
