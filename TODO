@@ -1,0 +1,8 @@
+List Of Tasks
+
+-Add SceneManager
+-Add ImGui
+-Add Proper Shutdown Procedure
+-Add Terrain Height Sampling from HeightMaps
+-Add Scaling, Frequency etc to it aswell
+

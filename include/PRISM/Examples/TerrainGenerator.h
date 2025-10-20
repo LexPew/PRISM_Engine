@@ -2,6 +2,7 @@
 
 #include <PRISM/Engine/ModelEntity.h>
 #include <PRISM/Renderer/Vertex.h>
+//TODO: Update to sample height maps
 class TerrainGenerator: public ModelEntity
 {
     int gridSizeX{16};
