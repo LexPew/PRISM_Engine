@@ -5,6 +5,7 @@
 class Scene
 {
 private:
+
     std::vector<std::shared_ptr<Entity>> entities;
 public:
     Scene(){};
@@ -16,4 +17,6 @@ public:
 
     virtual void AddEntity(const std::shared_ptr<Entity>& entity){entities.push_back(entity);}
     std::vector<std::shared_ptr<Entity>>& GetEntities(){return entities;};
+
+    void GUI();
 };

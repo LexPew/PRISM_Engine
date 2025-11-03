@@ -15,6 +15,19 @@ void OrbitalCameraEntity::Update(float deltaTime)
 {
     ScrollSpeed();
 
+
+    // Lock cursor on left click && we are not clicking on ImGui windows
+    if (Input::Get().GetMouse().GetMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) && !Input::Get().GetMouse().ImGuiCursorCheck())
+    {
+        Input::Get().SetCursorLockState(true);
+    }
+
+    //Dont update camera movement or rotation if cursor is unlocked
+    if(!Input::Get().IsCursorLocked())
+    {
+        CameraEntity::Update(deltaTime);
+        return;
+    }
     const glm::vec2& delta = Input::Get().GetMouse().GetMouseDelta();
 
     // Update camera rotation
@@ -22,9 +35,6 @@ void OrbitalCameraEntity::Update(float deltaTime)
     transform.rotation.x -= delta.y * turnSpeed * deltaTime;
     transform.rotation.x = PMath::Clamp(transform.rotation.x, -89.9f, 89.9f);
 
-    // Lock cursor on left click
-    if (Input::Get().GetMouse().GetMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT))
-        Input::Get().SetCursorLockState(true);
 
     // Movement speed (handle sprint)
     float currentMoveSpeed = moveSpeed;

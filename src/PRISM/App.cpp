@@ -6,6 +6,9 @@
 #include <PRISM/Examples/TerrainScene.h>
 #include <PRISM/Core/Input/Input.h>
 #include <PRISM/Engine/SceneManager.h>
+#include <PRISM/Core/Time.h>
+#include <PRISM/Utils/Debug.h>
+#include <PRISM/Utils/FLoader.h>
 //ImGui Includes
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -18,7 +21,7 @@ bool App::Init()
     // Initialize Everything
 
     // 1. Create the window first
-    window = std::make_shared<Window>(screenWidth, screenHeight, " // P.R.I.S.M //");
+    window = std::make_shared<Window>(screenWidth, screenHeight, " /|/ P.R.I.S.M //");
 
     // 2. Load GL
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -29,7 +32,7 @@ bool App::Init()
     }
 
     // 3. Initialize Renderer
-    renderer = std::make_unique<Renderer>();
+    Renderer::Get();
 
 
     // 6. Initialize math utils
@@ -46,6 +49,7 @@ bool App::Init()
 
     ImGui_ImplGlfw_InitForOpenGL(window.get()->GetGlfwWindow(), true);
     ImGui_ImplOpenGL3_Init();
+
 
     return true;
 }
@@ -64,30 +68,30 @@ bool App::Run()
 
 void App::Loop()
 {
-    double lastTime = glfwGetTime();
 
+
+    //SceneManager::Get().SetScene(std::make_shared<TerrainScene>());
     SceneManager::Get().SetScene(std::make_shared<CubeScene>());
     SceneManager::Get().Start();
 
     while (!window->ShouldClose())
     {
-        double currentTime = glfwGetTime();
-        float deltaTime = float(currentTime - lastTime);
-        lastTime = currentTime;
-
+        Time::Update();
         // Rendering
 
-        renderer->BeginFrame();
-
+        Renderer::Get().BeginFrame();
 
         //ImGui New Frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        //ImGui::ShowDemoWindow();
+        //Statistics::GUI();
+        //ImGui::ShowDemoWindow();a
+        Debug::GUI();
+        SceneManager::Get().GetScene()->GUI();
         // Logic
         Input::Get().Update(window->GetGlfwWindow());
-        SceneManager::Get().Update(deltaTime);
+        SceneManager::Get().Update(Time::deltaTime);
 
         SceneManager::Get().Draw();
 
@@ -95,7 +99,7 @@ void App::Loop()
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        renderer->EndFrame();
+        Renderer::Get().EndFrame();
         Input::Get().EndFrame();
     }
 

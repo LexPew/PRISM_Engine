@@ -41,4 +41,6 @@ public:
     void SetCursorLockState(bool lock);
 
     void ToggleCursorLock() { SetCursorLockState(!cursorLocked); };
+
+    bool IsCursorLocked() { return cursorLocked; }
 };

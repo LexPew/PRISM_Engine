@@ -1,10 +1,12 @@
 List Of Tasks
 
+-Cleanup Terrain Generator & Rename
+-Try to look for points to implement better RAII - specifically the mesh setting
 
--Add Simple ImGUI menu
+-Add Simple ImGUI menu For SceneManagement
 -Cleanup classes
 -Add Proper Shutdown Procedure
--Add Terrain Height Sampling from HeightMaps
+
 -Add Scaling, Frequency etc to it aswell
 -Redo input to be static, less flexible but simpler
 
@@ -13,3 +15,4 @@ DONE:
 -Add ImGui - DONE
 -Add Camera Lock Feature so that when you press escape it will unlock camera but once you click on again it will unlock - DONE
 -Add SceneManager -DONE
+-Add Terrain Height Sampling from HeightMaps - DONE

@@ -2,6 +2,7 @@
 #include <PRISM/Renderer/Renderer.h>
 #include <PRISM/Core/Input/Input.h>
 #include <PRISM/Core/Window.h>
+#include <imgui.h>
 
 Mouse::Mouse()
 {
@@ -48,4 +49,10 @@ void Mouse::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 void Mouse::EndFrame()
 {
     scrollDelta = 0.0f;
+}
+
+bool Mouse::ImGuiCursorCheck()
+{
+    ImGuiIO& io = ImGui::GetIO();
+    return io.WantCaptureMouse;
 }

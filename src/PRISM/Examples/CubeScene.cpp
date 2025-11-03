@@ -4,9 +4,10 @@
 #include <PRISM/Engine/ModelEntity.h>
 #include <PRISM/Utils/PMath.h>
 #include <PRISM/Examples/RubiksCubeExample.h>
-#include <PRISM/Utils/FLoader.h>
 
-#include <PRISM/Examples/TerrainGenerator.h>
+#include <PRISM/Core/AssetManger.h>
+
+#include <PRISM/Engine/Terrain.h>
 std::shared_ptr<OrbitalCameraEntity> camera;
 void CubeScene::Start()
 {
@@ -15,9 +16,11 @@ void CubeScene::Start()
     AddEntity(camera);
 
     // Create one Cube instance that stays in scope
-    static RubiksCubeExample cubeMesh; // <-- static ensures it stays alive for the whole program
-    static Cube cubeMesh2;
-    static Mesh objMesh = FLoader::LoadObject("/media/sharedrive/Year_3/3D_Graphics/Learning_Material/PRISM_Renderer/Apple.obj");
+    auto rubixCube = std::make_shared<RubiksCubeExample>();
+
+    auto monkeyMesh = AssetManager::LoadMesh("examples/Monkey.obj");
+    auto cubeMesh = std::make_shared<Cube>();
+    auto boxTexture = AssetManager::LoadTexture("examples/crate1/crate1_diffuse.png");
 
     for (int i = 0; i < 10; i++)
     {
@@ -31,15 +34,17 @@ void CubeScene::Start()
         // Randomly choose between cubeMesh, cubeMesh2, and objMesh
         if (rand <= 0.33f)
         {
-            newCube->SetMesh(cubeMesh); // Pass by reference, copy by value
+            newCube->SetMesh(cubeMesh);
         }
+
         else if (rand < 0.66f)
         {
-            newCube->SetMesh(cubeMesh2); // Pass by reference, copy by value
+            newCube->SetMesh(rubixCube);
+            newCube->SetTexture(boxTexture);
         }
         else
         {
-            newCube->SetMesh(objMesh); // Pass by reference, copy by value
+            newCube->SetMesh(monkeyMesh);
         }
 
         newCube->transform.position = {rX, rY, rZ};

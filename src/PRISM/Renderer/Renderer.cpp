@@ -6,19 +6,14 @@
 #include <PRISM/Renderer/RenderSettings.h>
 #include <PRISM/Utils/FLoader.h>
 
-Renderer* Renderer::instance = nullptr;
+
 // TODO: UPDATE THIS TO USE BETTER THAN RUNTIME ERROR AND SORT INCLUDES ETC
 Renderer::Renderer()
 {
-    if(instance != nullptr)
-    {
-        //TODO: Throw errors
-    }
-    instance = this;
-
     currentShader = std::make_unique<Shader>(
-        FLoader::LoadFile("shaders/default.vert"),
-        FLoader::LoadFile("shaders/default.frag")
+        
+        FLoader::LoadFile(FLoader::GetAssetPath("engine/shaders/default.vert")),
+        FLoader::LoadFile(FLoader::GetAssetPath("engine/shaders/default.frag"))
     );
 
     currentShader->Initialize();
@@ -53,7 +48,7 @@ void Renderer::SendCameraMatrices(const CameraEntity* camera)
     currentShader->UpdateMatrix(MatrixType::MatrixView, viewMatrix);
 }
 
-void Renderer::Draw(const Mesh& model, const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale)
+void Renderer::Draw(const std::shared_ptr<Mesh>& model, const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale)
 {
     currentShader->Enable();
 
@@ -65,7 +60,7 @@ void Renderer::Draw(const Mesh& model, const glm::vec3& position, const glm::vec
     modelMatrix = glm::scale(modelMatrix, scale);
 
     currentShader->UpdateMatrix(MatrixType::MatrixModel, modelMatrix);
-    model.Draw();
+    model->Draw();
 }
 
 void Renderer::EndFrame()

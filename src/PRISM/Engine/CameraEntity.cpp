@@ -5,6 +5,6 @@ void CameraEntity::Update(float deltaTime)
 {
     // Send camera matrices to the renderer
 
-    Renderer::Get()->SendCameraMatrices(this);
+    Renderer::Get().SendCameraMatrices(this);
 
 }

@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.28)
 project(PRISM LANGUAGES CXX C)
+
 add_executable(${PROJECT_NAME})
 
 
@@ -12,6 +13,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_LOCAL_INTERFACE:${CMAK
 target_include_directories(${PROJECT_NAME} PRIVATE $<BUILD_LOCAL_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
+target_compile_definitions(${PROJECT_NAME} PRIVATE ASSET_DIR="${CMAKE_BINARY_DIR}/assets")
 #FMT Library, GLM Library, ASSIMP
 include(FetchContent)
 FetchContent_Declare(
@@ -56,6 +58,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE fmt glm::glm glfw OpenGL::GL)
 #ASSETS
 
 #Copy Shaders to build directory
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
     

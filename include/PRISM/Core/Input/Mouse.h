@@ -23,6 +23,9 @@ public:
     void SetScrollDelta(float delta){scrollDelta = delta;};
     float GetScrollDelta(){return scrollDelta;};
     void EndFrame();
+
+    bool ImGuiCursorCheck();
+
 private:
     //Calculates the mouse delta
     void CalculateMouseDelta(GLFWwindow *window);

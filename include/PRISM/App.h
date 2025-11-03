@@ -12,7 +12,7 @@ class App
 {
 private:
     std::shared_ptr<Window> window{nullptr};
-    std::unique_ptr<Renderer> renderer{nullptr};
+
 
 
     int screenWidth = 800.0f;

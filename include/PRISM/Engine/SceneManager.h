@@ -39,4 +39,5 @@ public:
         if (currentScene)
             currentScene->Draw();
     }
+    void GUI();
 };

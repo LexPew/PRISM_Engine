@@ -7,24 +7,26 @@
 class Mesh
 {
 private:
-    unsigned int VAO;
-    unsigned int VBO;
-    unsigned int VCO;
-    unsigned int IBO;
+    unsigned int VAO{0}; //Object
+    unsigned int VBO{0}; //Vertice
+    unsigned int VCO{0}; //Colour
+    unsigned int VUO{0}; //UV
+    unsigned int IBO{0}; //Indices
 
 protected:
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
 
 public:
-    Mesh(){};
+    Mesh() {};
     Mesh(const std::vector<Vertex> &_vertices, const std::vector<unsigned int> &_indices);
     ~Mesh();
 
+
+
     void Initialize(const std::vector<Vertex> &_vertices, const std::vector<unsigned int> &_indices);
     void Draw() const;
-   
+
     std::vector<Vertex> &GetVertices() { return vertices; };
     std::vector<unsigned int> &GetIndices() { return indices; };
-
 };

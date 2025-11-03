@@ -23,21 +23,22 @@ private:
     std::unique_ptr<Shader> currentShader;
 
     /**
-     * @brief Singleton instance of the Renderer.
+     * @brief Constructs the Renderer and initializes rendering resources.
      */
-    static Renderer* instance;
+    Renderer();
 
 public:
     /**
      * @brief Retrieves the global Renderer instance.
-     * @return Pointer to the active Renderer.
+     * @return Reference to the active Renderer.
      */
-    static Renderer* Get() { return instance; }
+    static Renderer& Get() 
+    { 
+        static Renderer instance;
+        return instance;
+    }
 
-    /**
-     * @brief Constructs the Renderer and initializes rendering resources.
-     */
-    Renderer();
+
 
     /**
      * @brief Updates the active shader with the latest camera matrices.
@@ -54,12 +55,12 @@ public:
 
     /**
      * @brief Draws a mesh with the specified transformation.
-     * @param model Reference to the mesh to draw.
+     * @param model Pointer to the mesh to draw.
      * @param position World-space position of the mesh.
      * @param rotation Euler rotation (in degrees).
      * @param scale Scale factor of the mesh.
      */
-    void Draw(const Mesh& model, const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale);
+    void Draw(const std::shared_ptr<Mesh>& model, const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale);
 
     /**
      * @brief Ends the current frame.

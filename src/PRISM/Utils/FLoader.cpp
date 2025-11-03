@@ -10,6 +10,9 @@
 #include <vector>
 #include <PRISM/Utils/PMath.h>
 
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image/stb_image.h>
 std::string FLoader::LoadFile(const std::string &path)
 {
     std::ifstream file(path);
@@ -23,7 +26,7 @@ std::string FLoader::LoadFile(const std::string &path)
     buffer << file.rdbuf();
     return buffer.str();
 }
-Mesh FLoader::LoadObject(const std::string &path)
+std::shared_ptr<Mesh> FLoader::LoadObject(const std::string &path)
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
@@ -41,7 +44,7 @@ Mesh FLoader::LoadObject(const std::string &path)
     if (!success)
     {
         fmt::println("TinyObj error: {}", err);
-        return Mesh(); // return empty mesh if loading fails
+        return nullptr;
     }
 
     // Loop over all shapes
@@ -57,17 +60,56 @@ Mesh FLoader::LoadObject(const std::string &path)
             glm::vec3 position = {
                 attrib.vertices[index.vertex_index * 3 + 0],
                 attrib.vertices[index.vertex_index * 3 + 1],
-                attrib.vertices[index.vertex_index * 3 + 2]
+                attrib.vertices[index.vertex_index * 3 + 2]};
+
+            // TODO: Update
+
+            
+            glm::vec2 uv = {
+                attrib.texcoords[index.texcoord_index * 2 + 0],
+                attrib.texcoords[index.texcoord_index * 2 + 1],
+
             };
+            //TODO: Update to use vert colour but for now use normals
+            glm::vec3 normal = {
+                attrib.normals[index.normal_index * 3 + 0],
+                attrib.normals[index.normal_index * 3 + 1],
+                attrib.normals[index.normal_index * 3 + 2]};
 
-            //TODO: Update
-            glm::vec4 vertexColour = glm::vec4(PMath::RandomRange(0.0f, 1.0f), PMath::RandomRange(0.0f, 1.0f), PMath::RandomRange(0.0f, 1.0f), 1.0f);
+            glm::vec4 vertexColour = glm::vec4(
+                PMath::Clamp((normal.x + 1.0f) * 0.5f, 0.0f, 1.0f),
+                PMath::Clamp((normal.y + 1.0f) * 0.5f, 0.0f, 1.0f),
+                PMath::Clamp((normal.z + 1.0f) * 0.5f, 0.0f, 1.0f),
+                1.0f);
 
-            Vertex vert(position, vertexColour);
+            //Added UV
+            Vertex vert(position, vertexColour, uv);
             vertices.push_back(vert);
             indices.push_back(static_cast<unsigned int>(j));
         }
     }
+    
 
-    return Mesh(vertices, indices);
+    fmt::println("Loaded object with {} vertices and {} indices", vertices.size(), indices.size());
+
+    auto mesh = std::make_shared<Mesh>(vertices, indices);
+    return mesh;
+}
+
+ImageData FLoader::LoadImage(const std::string &path)
+{
+    ImageData image;
+    
+    image.data = stbi_load(path.c_str(), &image.width, &image.height, &image.channels, 4); //4 = RGBA32
+
+    if(!image.data){
+        fmt::println("Error: Failed to load image");
+        return image;
+    }else{
+        fmt::println("Loaded image with size: {}x{} and channels: {}", image.width, image.height, image.channels);
+    }
+
+
+
+    return image;
 }
