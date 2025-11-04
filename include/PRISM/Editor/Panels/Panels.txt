@@ -1,0 +1,6 @@
+The Editor folder is for mostly GUI based code.
+Following the naming structure: Editor<Tool>Panel so for example  EditorScenePanel would be the scene hierarchy and properties panel.
+
+
+Panel:
+A panel is a GUI section that contains information about a specific topic, e.g. Statistics, Scene Hierarchy, Entity Properties, Debug Info, etc.

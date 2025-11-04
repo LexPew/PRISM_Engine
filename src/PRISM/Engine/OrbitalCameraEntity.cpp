@@ -19,7 +19,7 @@ void OrbitalCameraEntity::Update(float deltaTime)
     // Lock cursor on left click && we are not clicking on ImGui windows
     if (Input::Get().GetMouse().GetMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) && !Input::Get().GetMouse().ImGuiCursorCheck())
     {
-        Input::Get().SetCursorLockState(true);
+       Input::Get().SetCursorLockState(true);
     }
 
     //Dont update camera movement or rotation if cursor is unlocked

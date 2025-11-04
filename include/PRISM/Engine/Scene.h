@@ -18,5 +18,5 @@ public:
     virtual void AddEntity(const std::shared_ptr<Entity>& entity){entities.push_back(entity);}
     std::vector<std::shared_ptr<Entity>>& GetEntities(){return entities;};
 
-    void GUI();
+    std::vector<std::shared_ptr<Entity>>& GetAllEntities() { return entities; }
 };

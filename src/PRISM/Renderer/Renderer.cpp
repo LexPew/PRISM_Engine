@@ -33,7 +33,7 @@ void Renderer::SendCameraMatrices(const CameraEntity* camera)
 {
     currentShader->Enable();
 
-    glm::mat4 projectionMatrix = glm::perspective(
+    projectionMatrix = glm::perspective(
         glm::radians(camera->fov),
         (float)(Window::Get()->GetScreenWidth()) /
         (float)(Window::Get()->GetScreenHeight()),
@@ -41,8 +41,12 @@ void Renderer::SendCameraMatrices(const CameraEntity* camera)
         camera->far
     );
 
+    projectionMatrix = projectionMatrix;
+
     glm::vec3 targetPosition = camera->transform.position + camera->transform.forward();
-    glm::mat4 viewMatrix = glm::lookAt(camera->transform.position, targetPosition, {0, 1, 0});
+    viewMatrix = glm::lookAt(camera->transform.position, targetPosition, {0, 1, 0});
+
+
 
     currentShader->UpdateMatrix(MatrixType::MatrixProjection, projectionMatrix);
     currentShader->UpdateMatrix(MatrixType::MatrixView, viewMatrix);

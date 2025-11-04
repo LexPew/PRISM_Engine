@@ -7,13 +7,13 @@
 #include <PRISM/Core/Input/Input.h>
 #include <PRISM/Engine/SceneManager.h>
 #include <PRISM/Core/Time.h>
-#include <PRISM/Utils/Debug.h>
 #include <PRISM/Utils/FLoader.h>
+#include <PRISM/Editor/Panels/DevelopmentPanel.h>
 //ImGui Includes
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-
+#include <ImGuizmo.h>
 
 //TODO:Remove scene stuff once done testing & cleanup
 bool App::Init()
@@ -85,10 +85,17 @@ void App::Loop()
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+        ImGuizmo::BeginFrame();
         //Statistics::GUI();
         //ImGui::ShowDemoWindow();a
-        Debug::GUI();
-        SceneManager::Get().GetScene()->GUI();
+        if(Input::Get().IsKeyPressed(GLFW_KEY_F1))
+        {
+            PRISM::Editor::DevelopmentPanel::ToggleDisplay();
+        }
+        PRISM::Editor::DevelopmentPanel::Display();
+
+        //Debug::GUI();
+        //SceneManager::Get().GetScene()->GUI();
         // Logic
         Input::Get().Update(window->GetGlfwWindow());
         SceneManager::Get().Update(Time::deltaTime);
@@ -98,7 +105,7 @@ void App::Loop()
         //ImGui Render
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+        
         Renderer::Get().EndFrame();
         Input::Get().EndFrame();
     }

@@ -15,8 +15,8 @@ private:
 
 
 
-    int screenWidth = 800.0f;
-    int screenHeight = 600.0f;
+    int screenWidth = 1280.0f;
+    int screenHeight = 720.0f;
     float fov = 45.0f;
 
 public:

@@ -29,7 +29,9 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/ocornut/imgui.git
     GIT_TAG v1.92.4
 )
+
 FetchContent_MakeAvailable(imgui)
+
 
 set(IMGUI_DIR ${imgui_SOURCE_DIR})
 target_sources(${PROJECT_NAME} PRIVATE
@@ -54,7 +56,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/include/glfw)
 #OpenGL
 find_package(OpenGL REQUIRED)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE fmt glm::glm glfw OpenGL::GL)
+target_link_libraries(${PROJECT_NAME} PRIVATE fmt glm::glm glfw OpenGL::GL )
 #ASSETS
 
 #Copy Shaders to build directory

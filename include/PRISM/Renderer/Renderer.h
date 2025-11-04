@@ -22,6 +22,11 @@ private:
      */
     std::unique_ptr<Shader> currentShader;
 
+
+    glm::mat4 projectionMatrix{1.0f};
+    glm::mat4 viewMatrix{1.0f};
+
+
     /**
      * @brief Constructs the Renderer and initializes rendering resources.
      */
@@ -68,4 +73,7 @@ public:
      * Swaps display buffers. This should be called after all draw calls for the frame.
      */
     void EndFrame();
+
+    glm::mat4& GetLastProjectionMatrix() { return projectionMatrix; };
+    glm::mat4& GetLastViewMatrix() { return viewMatrix; };
 };
