@@ -18,14 +18,14 @@ uniform mat4 view;
 uniform mat4 projection;
 
 //Lighting
-uniform vec3 ambient_Light;
+
 
 
 
 //Outputs
 out vec4 frag_Vertex_Colour;
 out vec2 frag_Vertex_UV;
-out vec3 frag_Ambient_Light;
+
 out vec3 frag_Vertex_Normal;
 out vec3 frag_Position;
 
@@ -38,7 +38,7 @@ void main()
 
     frag_Vertex_Colour = vertex_Colour;
     frag_Vertex_UV = vertex_UV;
-    frag_Ambient_Light = ambient_Light;
+
 
 
     //Extract the upper left bit of the model matrix, so we only get rotation and scaling. Since we apply normal in object space

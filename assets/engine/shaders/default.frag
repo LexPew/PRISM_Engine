@@ -3,6 +3,7 @@
 // Struct to define a basic light
 struct Light
 {
+    bool active;
     vec3 light_position;    // Position of the light in world space
     float light_intensity;  // Intensity / strength of the light
     float light_attentuaion; //How far the light travels
@@ -12,16 +13,15 @@ struct Light
 out vec4 FragColor;
 
 // Uniforms
-uniform Light lights[1];        // Array of lights (max 10)
+uniform Light lights[10];        // Array of lights (max 10)
 uniform sampler2D input_Texture; // Texture applied to the object
 uniform vec3 directional_Light;  // Directional light vector
 uniform bool debug_Vertex;       // Debug flag to show vertex colors
-
+uniform vec3 ambient_Light;
 // Inputs from the vertex shader
 in vec4 frag_Vertex_Colour;   // Interpolated vertex color
 in vec2 frag_Vertex_UV;       // Interpolated UV coordinates
 in vec3 frag_Vertex_Normal;   // Interpolated normal in world space
-in vec3 frag_Ambient_Light;   // Ambient light contribution
 in vec3 frag_Position;        // Fragment position in world space
 
 void main()
@@ -30,16 +30,28 @@ void main()
     if(debug_Vertex == false)
     {
         // Normalize the interpolated normal for lighting calculations
-        vec3 normalizedNormal = normalize(frag_Vertex_Normal);
+        vec3 normal = normalize(frag_Vertex_Normal);
 
-        // Direction of the directional light (negative because light points toward the surface)
-        vec3 lightDirection = normalize(-directional_Light);
 
-        // Compute diffuse intensity using Lambert's cosine law
-        float diffuseIntensity = max(0, dot(lightDirection, normalizedNormal));
+        //Directional Light
+        vec3 l_directional = normalize(-directional_Light);
+        float i_directional = max(0, dot(l_directional, normal));
 
+        float diffuseIntensity = i_directional;
+        //Spot Light
+        for(int i = 0; i < 10; i++)
+        {
+            if(lights[i].active)
+            {
+                vec3 l_spot = normalize(lights[i].light_position - frag_Position);
+                float i_spot = max(0,dot(l_spot, normal));
+                diffuseIntensity += i_spot;
+            }
+            
+        }
+      
         // Ambient contribution (from uniform)
-        vec3 ambient = frag_Ambient_Light;
+        vec3 ambient = ambient_Light;
 
         // Diffuse contribution using the texture color and diffuse intensity
         vec3 diffuse = diffuseIntensity * vec3(texture(input_Texture, frag_Vertex_UV));
@@ -52,4 +64,5 @@ void main()
         // Debug mode: output the vertex color directly
         FragColor = frag_Vertex_Colour;
     }
+    
 }
