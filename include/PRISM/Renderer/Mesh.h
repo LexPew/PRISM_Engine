@@ -8,10 +8,7 @@ class Mesh
 {
 private:
     unsigned int VAO{0}; //Object
-    unsigned int VBO{0}; //Vertice
-    unsigned int VCO{0}; //Colour
-    unsigned int VUO{0}; //UV
-    unsigned int VNO{0}; //Normals
+    unsigned int VBO{0}; //Vertices
     unsigned int IBO{0}; //Indices
 
 protected:
