@@ -25,6 +25,7 @@ void Mesh::Draw() const
 
 void Mesh::Initialize(const std::vector<Vertex> &_vertices, const std::vector<unsigned int> &_indices)
 {
+    
     if (VAO != 0)
     {
         // TODO: Add throw or println
@@ -74,6 +75,7 @@ void Mesh::Initialize(const std::vector<Vertex> &_vertices, const std::vector<un
     // Setup VBO for Normal Data
 
     glVertexAttribPointer(3,3, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(Vertex,normal));
+
     glEnableVertexAttribArray(3);
 
    
