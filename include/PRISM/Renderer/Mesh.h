@@ -11,6 +11,7 @@ private:
     unsigned int VBO{0}; //Vertice
     unsigned int VCO{0}; //Colour
     unsigned int VUO{0}; //UV
+    unsigned int VNO{0}; //Normals
     unsigned int IBO{0}; //Indices
 
 protected:

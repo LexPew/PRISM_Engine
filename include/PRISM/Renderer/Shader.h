@@ -39,5 +39,5 @@ public:
     // Send Matrices
     void UpdateMatrix(const MatrixType type, const glm::mat4 &matrix);
 
-    unsigned int GetProgramId() { return programId; };
+    const unsigned int GetProgramId() const { return programId; };
 };

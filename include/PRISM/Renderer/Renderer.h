@@ -2,6 +2,8 @@
 #include <PRISM/Renderer/Shader.h>
 #include <PRISM/Engine/CameraEntity.h>
 #include <PRISM/Renderer/Mesh.h>
+#include <PRISM/Engine/SceneLighting.h>
+#include <unordered_map>
 #include <memory>
 
 /**
@@ -14,6 +16,7 @@
  * This class follows a singleton pattern (accessible through Renderer::Get())
  * and provides a simple interface for beginning a frame, drawing 3D objects, and ending a frame.
  */
+//TODO: Move the lighting stuff to either a class struct or something like light manager
 class Renderer
 {
 private:
@@ -26,12 +29,16 @@ private:
     glm::mat4 projectionMatrix{1.0f};
     glm::mat4 viewMatrix{1.0f};
 
-
+    //TODO: Make this more flexible and not a hardcoded value, or some queue so lights can be turned on and off gaining ids / losing
+    std::unordered_map<unsigned int, bool> lightStatus;
+    int maxLights{10};
+    int idCounter{0};
     /**
      * @brief Constructs the Renderer and initializes rendering resources.
      */
     Renderer();
 
+    void Initialize();
 public:
     /**
      * @brief Retrieves the global Renderer instance.
@@ -50,6 +57,8 @@ public:
      * @param camera Pointer to the camera entity used for projection and view matrices.
      */
     void SendCameraMatrices(const CameraEntity* camera);
+
+    void SetSceneLighting(const SceneLighting& sceneLighting);
 
     /**
      * @brief Begins a new frame.
@@ -73,6 +82,16 @@ public:
      * Swaps display buffers. This should be called after all draw calls for the frame.
      */
     void EndFrame();
+
+    void ShutDown();
+
+    //Lights
+    int RequestLightId();
+
+    //TODO: Eventually Move To Structs and better management
+    void SendLightDetails(const unsigned int lightId, const glm::vec3& position, const float intensity);
+    void SetLightEnabled(unsigned int lightId, bool enabled);
+    const Shader& GetCurrentShader() const { return *currentShader; };
 
     glm::mat4& GetLastProjectionMatrix() { return projectionMatrix; };
     glm::mat4& GetLastViewMatrix() { return viewMatrix; };

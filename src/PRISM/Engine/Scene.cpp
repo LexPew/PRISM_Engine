@@ -1,6 +1,7 @@
 #include <PRISM/Engine/Scene.h>
 
 #include <PRISM/Engine/Entity.h>
+#include <PRISM/Renderer/Renderer.h>
 #include <imgui.h>
 
 
@@ -21,9 +22,13 @@ void Scene::Update(float deltaTime)
 }
 void Scene::Draw()
 {
+    //Send Scene lighting to renderer
+    Renderer::Get().SetSceneLighting(sceneLighting);
+
     for (auto &entity : entities)
     {
         entity->Draw();
     }
+
 }
 

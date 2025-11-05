@@ -83,7 +83,7 @@ std::shared_ptr<Mesh> FLoader::LoadObject(const std::string &path)
                 1.0f);
 
             //Added UV
-            Vertex vert(position, vertexColour, uv);
+            Vertex vert(position, vertexColour, uv, normal);
             vertices.push_back(vert);
             indices.push_back(static_cast<unsigned int>(j));
         }
@@ -100,7 +100,7 @@ ImageData FLoader::LoadImage(const std::string &path)
 {
     ImageData image;
     
-    image.data = stbi_load(path.c_str(), &image.width, &image.height, &image.channels, 4); //4 = RGBA32
+    image.data = stbi_load(path.c_str(), &image.width, &image.height, &image.channels, image.channels); 
 
     if(!image.data){
         fmt::println("Error: Failed to load image");

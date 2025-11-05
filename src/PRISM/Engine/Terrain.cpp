@@ -41,8 +41,8 @@ void Terrain::GenerateFromHeightMap(const ImageData &heightMap)
             // We use 0-1 range so divide heightvalue by 255 to get this
             float greyScaleCol = heightValue / 255.0f;
             glm::vec4 color = glm::vec4(greyScaleCol, greyScaleCol, greyScaleCol, 1.0f);
-            //TODO: ADD UV
-            vertices.push_back({{x, normalizedHeight, z}, color,{0,0}});
+            //TODO: ADD UV & NORMALS
+            vertices.push_back({{x, normalizedHeight, z}, color,{0,0}, {0,1,0}});
         }
     }
 
@@ -74,8 +74,8 @@ void Terrain::GenerateFromPerlinNoise(float scale, int octaves)
             float greyScaleCol = (noise + 1) / 2;
 
             glm::vec4 color = glm::vec4(greyScaleCol, greyScaleCol, greyScaleCol, 1.0f);
-            //TODO: ADD UV
-            vertices.push_back({{x, normalizedHeight, z}, color, {0,0}});
+            //TODO: ADD UV & NORMALS
+            vertices.push_back({{x, normalizedHeight, z}, color, {0,0}, {0,1,0}});
         }
     }
 

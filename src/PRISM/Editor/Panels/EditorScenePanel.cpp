@@ -23,18 +23,26 @@ namespace PRISM::Editor
 
         if (ImGui::CollapsingHeader("Scene Information", ImGuiTreeNodeFlags_DefaultOpen))
         {
+            //Active Scene
             ImGui::SeparatorText("Active Scene");
             ImGui::Spacing();
 
-            // Scene Name
-            ImGui::Text("Active Scene:");
-            ImGui::SameLine();
+     
             ImGui::TextColored(ImVec4(0.30f, 0.55f, 1.0f, 1.0f),
                                "%p", currentScene.get());
             ImGui::Spacing();
             ImGui::Separator();
 
-            static bool showHierarchy = true;
+            //Scene Light Settings
+            ImGui::SeparatorText("Scene Light Settings");
+            ImGui::Spacing();
+            auto& lightSettings = currentScene->GetSceneLighting();
+            ImGui::ColorEdit3("Ambient Colour", &lightSettings.ambientLightColour.x);
+            ImGui::Spacing();
+            ImGui::DragFloat3("Directional Light", &lightSettings.directionalLight.direction.x,.1f);
+            ImGui::Separator();
+
+            static bool showHierarchy = false;
             ImGui::Checkbox("Show Scene Hierarchy", &showHierarchy);
 
             if (showHierarchy)

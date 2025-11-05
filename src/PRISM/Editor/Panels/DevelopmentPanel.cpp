@@ -1,13 +1,16 @@
+#include <glad/glad.h>
 #include <PRISM/Editor/Panels/DevelopmentPanel.h>
 #include <PRISM/Editor/Panels/EditorStatisticsPanel.h>
 #include <PRISM/Editor/Panels/EditorScenePanel.h>
+
+#include <PRISM/Renderer/Renderer.h>
 #include <imgui.h>
 
 bool PRISM::Editor::DevelopmentPanel::toggleDisplay = true;
 
 void PRISM::Editor::DevelopmentPanel::Display()
 {
-    if(!toggleDisplay)
+    if (!toggleDisplay)
         return;
 
     // Start our GUI here this will be a container for all other implementations we want,
@@ -42,19 +45,30 @@ void PRISM::Editor::DevelopmentPanel::Display()
         // Debug GUI - Wireframe mode toggle, etc.
         if (ImGui::CollapsingHeader("Debug Options"))
         {
-            static bool wireframe = false;
-            if (ImGui::Checkbox("Wireframe Mode", &wireframe))
+            if (ImGui::CollapsingHeader("Rendering"))
             {
-                if (wireframe)
+                static bool wireframe = false;
+                if (ImGui::Checkbox("Wireframe Mode", &wireframe))
                 {
-                    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                    if (wireframe)
+                    {
+                        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                    }
+                    else
+                    {
+                        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                    }
                 }
-                else
+                static bool vertexColour = false;
+                if (ImGui::Checkbox("Vertex Colours", &vertexColour))
                 {
-                    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                    unsigned int vertBoolLocation = glGetUniformLocation(Renderer::Get().GetCurrentShader().GetProgramId(), "debug_Vertex");
+                    if (vertBoolLocation != -1)
+                    {
+                        glUniform1i(vertBoolLocation, vertexColour);
+                    }
                 }
             }
-            // Add more debug options here as needed
         }
 
         // Scene Heirerarchy GUI
@@ -63,7 +77,7 @@ void PRISM::Editor::DevelopmentPanel::Display()
     ImGui::End();
 }
 
-//CREDIT TO CHATGPT FOR THE THEME FUNCTIONS
+// CREDIT TO CHATGPT FOR THE THEME FUNCTIONS
 void PRISM::Editor::DevelopmentPanel::LightTheme()
 {
     ImGuiStyle &style = ImGui::GetStyle();
@@ -135,7 +149,7 @@ void PRISM::Editor::DevelopmentPanel::LightTheme()
     style.FramePadding = ImVec2(6, 4);
 }
 
-//CREDIT TO CHATGPT FOR THE THEME FUNCTIONS
+// CREDIT TO CHATGPT FOR THE THEME FUNCTIONS
 void PRISM::Editor::DevelopmentPanel::DarkTheme()
 {
     ImGuiStyle &style = ImGui::GetStyle();

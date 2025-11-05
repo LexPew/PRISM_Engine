@@ -1,0 +1,28 @@
+#pragma once 
+
+#include <PRISM/Renderer/DirectionalLight.h>
+/**
+ * @struct SceneLighting
+ * @brief Contains all lighting information for a scene.
+ *
+ * Stores a directional light and an ambient light color.
+ */
+struct SceneLighting
+{
+    /**
+     * @brief Main directional light for the scene.
+     */
+    DirectionalLight directionalLight
+    {
+        
+        {8,-1.0f,0},
+        {.042f,.047f,.049f},
+        {1}
+    };
+
+    /**
+     * @brief Ambient light color applied to the entire scene.
+     * Defaults to a warm, low-intensity orange color.
+     */
+    glm::vec3 ambientLightColour{0.1f, 0.1f, 0.1f};
+};

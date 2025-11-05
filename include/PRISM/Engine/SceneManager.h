@@ -39,5 +39,8 @@ public:
         if (currentScene)
             currentScene->Draw();
     }
-    void GUI();
+    void ShutDown()
+    {
+        currentScene = nullptr;
+    }
 };

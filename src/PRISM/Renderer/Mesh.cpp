@@ -14,6 +14,7 @@ Mesh::~Mesh()
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &VCO);
     glDeleteBuffers(1, &IBO);
+    glDeleteBuffers(1, &VNO);
 }
 
 void Mesh::Draw() const
@@ -35,6 +36,7 @@ void Mesh::Initialize(const std::vector<Vertex> &_vertices, const std::vector<un
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &VCO);
     glGenBuffers(1, &VUO);
+    glGenBuffers(1, &VNO);
     glGenBuffers(1, &IBO);
     // Setup Values
     vertices = _vertices;
@@ -44,16 +46,20 @@ void Mesh::Initialize(const std::vector<Vertex> &_vertices, const std::vector<un
     std::vector<glm::vec3> vertexPositions;
     std::vector<glm::vec4> vertexColours;
     std::vector<glm::vec2> vertexUV;
+    std::vector<glm::vec3> vertexNormals;
     for (const auto &vertex : vertices)
     {
         vertexPositions.push_back(vertex.position);
         vertexColours.push_back(vertex.color);
         vertexUV.push_back(vertex.uv);
+        vertexNormals.push_back(vertex.normal);
     }
 
     // Setup and Assign VAO
 
     glBindVertexArray(VAO);
+
+    //TODO: Eventually interleave data
 
     // Setup VBO
 
@@ -75,6 +81,12 @@ void Mesh::Initialize(const std::vector<Vertex> &_vertices, const std::vector<un
     glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * vertexUV.size(), vertexUV.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void *)0);
     glEnableVertexAttribArray(2);
+
+    // Setup VBO for Normal Data
+    glBindBuffer(GL_ARRAY_BUFFER, VNO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * vertexNormals.size(), vertexNormals.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(3,3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+    glEnableVertexAttribArray(3);
 
     // Setup Element Index Buffer
 
