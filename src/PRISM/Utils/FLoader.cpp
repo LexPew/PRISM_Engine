@@ -28,6 +28,7 @@ std::string FLoader::LoadFile(const std::string &path)
 }
 std::shared_ptr<Mesh> FLoader::LoadObject(const std::string &path)
 {
+    //TODO: Implement Materials And Heirarchy
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
 
@@ -62,27 +63,24 @@ std::shared_ptr<Mesh> FLoader::LoadObject(const std::string &path)
                 attrib.vertices[index.vertex_index * 3 + 1],
                 attrib.vertices[index.vertex_index * 3 + 2]};
 
-            // TODO: Update
-
-            
             glm::vec2 uv = {
                 attrib.texcoords[index.texcoord_index * 2 + 0],
                 attrib.texcoords[index.texcoord_index * 2 + 1],
 
             };
-            //TODO: Update to use vert colour but for now use normals
+
             glm::vec3 normal = {
                 attrib.normals[index.normal_index * 3 + 0],
                 attrib.normals[index.normal_index * 3 + 1],
                 attrib.normals[index.normal_index * 3 + 2]};
 
+            //HACK: There is no vertex colours with objs so we just use the normals
             glm::vec4 vertexColour = glm::vec4(
                 PMath::Clamp((normal.x + 1.0f) * 0.5f, 0.0f, 1.0f),
                 PMath::Clamp((normal.y + 1.0f) * 0.5f, 0.0f, 1.0f),
                 PMath::Clamp((normal.z + 1.0f) * 0.5f, 0.0f, 1.0f),
                 1.0f);
 
-            //Added UV
             Vertex vert(position, vertexColour, uv, normal);
             vertices.push_back(vert);
             indices.push_back(static_cast<unsigned int>(j));

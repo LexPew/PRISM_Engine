@@ -59,7 +59,7 @@ bool App::Run()
     }
 
     Loop();
-    // TODO: Maybe shutdown function eventually
+
     ShutDown();
     return true;
 }
