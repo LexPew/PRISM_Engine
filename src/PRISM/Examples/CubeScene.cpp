@@ -12,7 +12,6 @@ std::shared_ptr<ModelEntity> floorEntity; // Keep floor as a member to skip rota
 void CubeScene::Start()
 {
 
-
     camera = std::make_shared<OrbitalCameraEntity>();
     camera->transform.position = {0, 0, 15.0f};
     AddEntity(camera);
@@ -32,8 +31,13 @@ void CubeScene::Start()
     floorEntity->transform.scale = {20.0f, 1.0f, 20.0f};   // Scale it up
     AddEntity(floorEntity);
 
-    auto light = std::make_shared<Light>(1.0f);
-    AddEntity(light);
+    for (int i = 0; i < 3; i++)
+    {
+        auto light = std::make_shared<Light>(.5f);
+        light->transform.position.x += (-10 +(10 * i));
+        AddEntity(light);
+    }
+
     // Spawn random cubes
     for (int i = 0; i < 10; i++)
     {
