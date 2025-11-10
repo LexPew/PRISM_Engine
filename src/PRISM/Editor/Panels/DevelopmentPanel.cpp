@@ -12,7 +12,7 @@
 
 
 #include <imgui.h>
-
+#include <fmt/core.h>
 bool PRISM::Editor::DevelopmentPanel::toggleDisplay = true;
 
 void PRISM::Editor::DevelopmentPanel::Display()
@@ -77,10 +77,9 @@ void PRISM::Editor::DevelopmentPanel::Display()
                 static bool vertexColour = false;
                 if (ImGui::Checkbox("Vertex Colours", &vertexColour))
                 {
-                    unsigned int vertBoolLocation = glGetUniformLocation(Renderer::Get().GetCurrentShader().GetProgramId(), "debug_Vertex");
-                    if (vertBoolLocation != -1)
+                    if(!Renderer::Get().GetCurrentShader().SetBool("debug_Vertex", vertexColour))
                     {
-                        glUniform1i(vertBoolLocation, vertexColour);
+                        fmt::println("Failed to set useVertexColour uniform in shader.");
                     }
                 }
             }

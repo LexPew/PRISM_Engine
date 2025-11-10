@@ -127,25 +127,20 @@ void Renderer::SendLightDetails(const unsigned int lightId, const glm::vec3 &pos
     std::string lightPrefix = "lights[" + std::to_string(lightId) + "]";
 
     // Send light position
-    int lightPositionLocation = glGetUniformLocation(currentShader->GetProgramId(), (lightPrefix + ".light_position").c_str());
-    if (lightPositionLocation != -1)
+    if(!currentShader->SetVec3(lightPrefix + ".light_position", position))
     {
-        glUniform3fv(lightPositionLocation, 1, glm::value_ptr(position));
+        fmt::print("Warning: '{}' uniform not found in shader.\n", lightPrefix + ".light_position");
     }
-
     // Send light intensity
-    int lightIntensityLocation = glGetUniformLocation(currentShader->GetProgramId(), (lightPrefix + ".light_intensity").c_str());
-    if (lightIntensityLocation != -1)
+    if(!currentShader->SetFloat(lightPrefix + ".light_intensity", intensity))
     {
-        glUniform1f(lightIntensityLocation, intensity);
+        fmt::print("Warning: '{}' uniform not found in shader.\n", lightPrefix + ".light_intensity");
     }
 
     // Send light attenuation
-        int lightAttenuationLocation = glGetUniformLocation(currentShader->GetProgramId(), (lightPrefix + ".light_attenuation").c_str());
-    if (lightAttenuationLocation != -1)
+    if(!currentShader->SetFloat(lightPrefix + ".light_attenuation", attenuation))
     {
-        glUniform1f(lightAttenuationLocation, attenuation);
-        
+        fmt::print("Warning: '{}' uniform not found in shader.\n", lightPrefix + ".light_attenuation");
     }
 
 }

@@ -91,7 +91,7 @@ public:
     //TODO: Eventually Move To Structs and better management
     void SendLightDetails(const unsigned int lightId, const glm::vec3& position, const float intensity, const float attenuation);
     void SetLightEnabled(unsigned int lightId, bool enabled);
-    const Shader& GetCurrentShader() const { return *currentShader; };
+     Shader& GetCurrentShader() const { return *currentShader; };
 
     glm::mat4& GetLastProjectionMatrix() { return projectionMatrix; };
     glm::mat4& GetLastViewMatrix() { return viewMatrix; };

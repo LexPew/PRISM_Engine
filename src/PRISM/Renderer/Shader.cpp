@@ -4,6 +4,7 @@
 #include <fmt/core.h>
 #include <glm/gtc/type_ptr.hpp>
 
+
 Shader::~Shader()
 {
     glDeleteProgram(programId);
@@ -99,4 +100,48 @@ void Shader::UpdateMatrix(const MatrixType type, const glm::mat4 &matrix)
         glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(matrix));
         break;
     }
+}
+
+int Shader::CheckLocation(const std::string &name)
+{
+    int location = glGetUniformLocation(programId, name.c_str());
+    return location;
+}
+
+bool Shader::SetBool(const std::string &name, bool value)
+{
+    int location = CheckLocation(name);
+    if (location == -1)
+        return false;
+
+    glUniform1i(location, (int)value);
+    return true;
+}
+
+bool Shader::SetInt(const std::string &name, int value)
+{
+    int location = CheckLocation(name);
+    if (location == -1)
+        return false;
+
+    glUniform1i(location, value);
+    return true;
+}
+
+bool Shader::SetFloat(const std::string &name, const float value)
+{
+    int location = CheckLocation(name);
+    if (location == -1)
+        return false;
+    glUniform1f(location, value);
+    return true;
+}
+
+bool Shader::SetVec3(const std::string &name, const glm::vec3 &value)
+{
+    int location = CheckLocation(name);
+    if (location == -1)
+        return false;
+    glUniform3fv(location, 1, glm::value_ptr(value));
+    return true;
 }
