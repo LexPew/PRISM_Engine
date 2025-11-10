@@ -8,5 +8,5 @@ private:
 public:
     TerrainScene(){};
     void Start() override;
-
+    void Panel() override;
 };

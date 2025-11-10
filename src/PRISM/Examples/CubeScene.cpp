@@ -33,8 +33,10 @@ void CubeScene::Start()
 
     for (int i = 0; i < 3; i++)
     {
-        auto light = std::make_shared<Light>(.5f);
+        auto light = std::make_shared<Light>(.3f);
         light->transform.position.x += (-10 +(10 * i));
+        light->transform.position.y = (i * 5);
+        light->SetAttenuation((5 + i * 8));
         AddEntity(light);
     }
 

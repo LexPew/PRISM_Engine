@@ -18,7 +18,7 @@ public:
       transform.rotation = p_rotation;
       transform.scale = p_scale;
    };
-
+   virtual ~Entity(){};
    virtual void Start() {};
    virtual void Update(float deltaTime) {};
    virtual void Draw() {};

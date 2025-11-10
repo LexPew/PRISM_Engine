@@ -42,6 +42,8 @@ namespace PRISM::Editor
             ImGui::DragFloat3("Directional Light", &lightSettings.directionalLight.direction.x,.1f);
             ImGui::Separator();
 
+            //Scene Specific Panels
+            currentScene->Panel();
             static bool showHierarchy = false;
             ImGui::Checkbox("Show Scene Hierarchy", &showHierarchy);
 

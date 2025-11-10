@@ -20,6 +20,7 @@ public:
         // Passing by value increments the shared_ptr refcount once.
         // Using std::move here avoids an extra redundant refcount increment/decremnt on assignment.
         currentScene = std::move(scene);
+        currentScene->Start();
     }
 
     std::shared_ptr<Scene> GetScene() { return currentScene; }

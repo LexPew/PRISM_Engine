@@ -4,6 +4,13 @@
 #include <PRISM/Editor/Panels/EditorScenePanel.h>
 
 #include <PRISM/Renderer/Renderer.h>
+
+//Scene Loading
+#include <PRISM/Examples/TerrainScene.h>
+#include <PRISM/Examples/CubeScene.h>
+#include <PRISM/Engine/SceneManager.h>
+
+
 #include <imgui.h>
 
 bool PRISM::Editor::DevelopmentPanel::toggleDisplay = true;
@@ -36,6 +43,14 @@ void PRISM::Editor::DevelopmentPanel::Display()
                     LightTheme();
                 else
                     DarkTheme();
+            }
+            if (ImGui::CollapsingHeader("Example Scenes")){
+                if(ImGui::Button("Cube Scene")){
+                    SceneManager::Get().SetScene(std::make_shared<CubeScene>());
+                }
+                if(ImGui::Button("TerrainScene")){
+                    SceneManager::Get().SetScene(std::make_shared<TerrainScene>());
+                }
             }
         }
 

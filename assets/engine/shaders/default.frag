@@ -6,7 +6,7 @@ struct Light
     bool active;
     vec3 light_position;    // Position of the light in world space
     float light_intensity;  // Intensity / strength of the light
-    float light_attentuaion; //How far the light travels
+    float light_attenuation; //How far the light travels
 };
 
 // Output of the fragment shader
@@ -45,16 +45,23 @@ void main()
             {
                 vec3 l_spot = normalize(lights[i].light_position - frag_Position);
                 float i_spot = max(0,dot(l_spot, normal));
+                float distance = length(lights[i].light_position - frag_Position);
+                float attenuation_spot = 1.0 - smoothstep(0, lights[i].light_attenuation, distance);
+
+                i_spot *= attenuation_spot;
+                                //i_spot *= lights[i].light_intensity;
                 diffuseIntensity += i_spot;
+                
             }
             
         }
       
-        // Ambient contribution (from uniform)
-        vec3 ambient = ambient_Light;
+        // Ambient contribution, tinted by tex colour (from uniform)
+        vec3 texColour = vec3(texture(input_Texture,frag_Vertex_UV));
+        vec3 ambient = ambient_Light * texColour;
 
         // Diffuse contribution using the texture color and diffuse intensity
-        vec3 diffuse = diffuseIntensity * vec3(texture(input_Texture, frag_Vertex_UV));
+        vec3 diffuse = diffuseIntensity * texColour;
 
         // Combine ambient and diffuse for final color
         FragColor = vec4(ambient + diffuse, 1.0);

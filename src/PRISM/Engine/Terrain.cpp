@@ -28,8 +28,8 @@ void Terrain::GenerateFromHeightMap(const ImageData &heightMap)
             int heightMapSamplePointY = vertexPositionNormalized.y * (float)heightMap.height;
 
             // Then we get the index inside the flattened image array, since its row first array we use sampleY * arrayWidth + sampleX
-            // Multiplied by 4 as there are 4 channels rgba
-            int index = (heightMapSamplePointY * heightMap.width + heightMapSamplePointX) * 4;
+            // Multiplied by channels
+            int index = (heightMapSamplePointY * heightMap.width + heightMapSamplePointX) * heightMap.channels;
 
             // Next we just use on color channel since its grayscale as our heightvalue
 

@@ -7,6 +7,7 @@
  *
  * Stores a directional light and an ambient light color.
  */
+//TODO: Update to make directional light use transform rotation style
 struct SceneLighting
 {
     /**
@@ -15,7 +16,7 @@ struct SceneLighting
     DirectionalLight directionalLight
     {
         
-        {8,-1.0f,0},
+        {6,-1.0f,0},
         {.021f,.022f,.025f},
         {1}
     };
@@ -24,5 +25,5 @@ struct SceneLighting
      * @brief Ambient light color applied to the entire scene.
      * Defaults to a warm, low-intensity orange color.
      */
-    glm::vec3 ambientLightColour{0.1f, 0.05f, 0.05f};
+    glm::vec3 ambientLightColour{0.2f, 0.2f, 0.2f};
 };

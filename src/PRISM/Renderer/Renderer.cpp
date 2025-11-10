@@ -120,8 +120,9 @@ int Renderer::RequestLightId()
     return -1;
 }
 
-void Renderer::SendLightDetails(const unsigned int lightId, const glm::vec3 &position, const float intensity)
+void Renderer::SendLightDetails(const unsigned int lightId, const glm::vec3 &position, const float intensity,const float attenuation)
 {
+    //TODO: Make easy set bool float etc in shader WRAPPERS
     // Build the uniform name for this light
     std::string lightPrefix = "lights[" + std::to_string(lightId) + "]";
 
@@ -138,6 +139,15 @@ void Renderer::SendLightDetails(const unsigned int lightId, const glm::vec3 &pos
     {
         glUniform1f(lightIntensityLocation, intensity);
     }
+
+    // Send light attenuation
+        int lightAttenuationLocation = glGetUniformLocation(currentShader->GetProgramId(), (lightPrefix + ".light_attenuation").c_str());
+    if (lightAttenuationLocation != -1)
+    {
+        glUniform1f(lightAttenuationLocation, attenuation);
+        
+    }
+
 }
 
 void Renderer::SetLightEnabled(unsigned int lightId, bool enabled)

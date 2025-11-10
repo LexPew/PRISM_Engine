@@ -88,4 +88,8 @@ public:
      * @param newLighting The new lighting configuration.
      */
     void SetSceneLighting(const SceneLighting &newLighting) { sceneLighting = newLighting; }
+
+    //TODO: Make this better, more flexible or something
+    //Scene Specific Panels
+    virtual void Panel() {/*PANEL STUFF*/};
 };
