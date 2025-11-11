@@ -27,4 +27,8 @@ public:
 
     std::vector<Vertex> &GetVertices() { return vertices; };
     std::vector<unsigned int> &GetIndices() { return indices; };
+
+    //Helper Functions
+
+    void CalculateNormals();
 };

@@ -6,7 +6,7 @@
 #include <PRISM/Renderer/Renderer.h>
 
 //Scene Loading
-#include <PRISM/Examples/TerrainScene.h>
+#include <PRISM/Examples/Scenes/TerrainScene.h>
 #include <PRISM/Examples/CubeScene.h>
 #include <PRISM/Engine/SceneManager.h>
 

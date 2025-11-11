@@ -39,8 +39,10 @@ void Terrain::GenerateFromHeightMap(const ImageData &heightMap)
             float normalizedHeight = heightValue / 255.0f; // 0-1
             normalizedHeight *= maxHeightScale;
             // We use 0-1 range so divide heightvalue by 255 to get this
-            float greyScaleCol = heightValue / 255.0f;
-            glm::vec4 color = glm::vec4(greyScaleCol, greyScaleCol, greyScaleCol, 1.0f);
+
+            //Vertex colour is based on the heightmap color, incase of colored heightmaps - e.g. Jamie heightmap
+            glm::vec4 color = glm::vec4(heightMap.data[index] / 255.0f, heightMap.data[index + 1] / 255.0f, heightMap.data[index + 2] / 255.0f, 1.0f);
+
             //TODO: ADD UV & NORMALS
             vertices.push_back({{x, normalizedHeight, z}, color,{0,0}, {0,1,0}});
         }
@@ -53,7 +55,7 @@ void Terrain::GenerateFromHeightMap(const ImageData &heightMap)
     SetMesh(terrainMesh);
 }
 
-void Terrain::GenerateFromPerlinNoise(float scale, int octaves)
+void Terrain::GenerateFromPerlinNoise(float scale, int octaves, float amplitude)
 {
     //Set perlin noise seed
     siv::PerlinNoise::seed_type seed = (unsigned int)Time::elapsedTime;
@@ -70,7 +72,7 @@ void Terrain::GenerateFromPerlinNoise(float scale, int octaves)
             const float noise = perlin.octave2D_01((x*scale), (z*scale), octaves);
 
             //Normalized
-            float normalizedHeight = maxScale * noise;
+            float normalizedHeight = amplitude * noise;
             float greyScaleCol = (noise + 1) / 2;
 
             glm::vec4 color = glm::vec4(greyScaleCol, greyScaleCol, greyScaleCol, 1.0f);

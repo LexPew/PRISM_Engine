@@ -10,7 +10,7 @@ private:
     int gridSizeX{16};
     int gridSizeZ{16};
 
-    float maxScale{50.0f};
+
 
     std::vector<Vertex> vertices;
 
@@ -19,13 +19,13 @@ public:
     {
         GenerateFromHeightMap(p_heightMap);
     };
-    Terrain(int p_gridSizeX, int p_gridSizeZ, float p_scale, int p_octaves) : gridSizeX(p_gridSizeX), gridSizeZ(p_gridSizeZ)
+    Terrain(int p_gridSizeX, int p_gridSizeZ, float p_scale, int p_octaves, float p_amplitude) : gridSizeX(p_gridSizeX), gridSizeZ(p_gridSizeZ)
     {
-        GenerateFromPerlinNoise(p_scale, p_octaves);
+        GenerateFromPerlinNoise(p_scale, p_octaves, p_amplitude);
     };
 
 private:
     void GenerateFromHeightMap(const ImageData &heightMap);
-    void GenerateFromPerlinNoise( float scale, int octaves);
+    void GenerateFromPerlinNoise( float scale, int octaves, float amplitude);
     void GenerateIndices(std::vector<unsigned int> &indices);
 };

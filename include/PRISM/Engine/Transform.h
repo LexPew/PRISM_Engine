@@ -28,4 +28,14 @@ struct Transform
     {
         return glm::cross(right(), forward());
     }
+
+    //Calculate rotation to look at a target point
+    void LookAt(const glm::vec3& target){
+        glm::vec3 direction = glm::normalize(target - position);
+        float pitch = glm::degrees(asin(direction.y));
+        float yaw = glm::degrees(atan2(direction.x, -direction.z));
+
+        rotation.x = pitch;
+        rotation.y = yaw;
+    };
 };
