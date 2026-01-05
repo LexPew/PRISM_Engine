@@ -3,6 +3,7 @@
 #include <PRISM/Engine/CameraEntity.h>
 #include <PRISM/Renderer/Mesh.h>
 #include <PRISM/Engine/SceneLighting.h>
+#include <PRISM/Renderer/SkyBoxRenderer.h>
 #include <unordered_map>
 #include <memory>
 
@@ -25,9 +26,11 @@ private:
      */
     std::unique_ptr<Shader> currentShader;
 
-
     glm::mat4 projectionMatrix{1.0f};
     glm::mat4 viewMatrix{1.0f};
+
+    //Skybox Renderer
+    SkyBoxRenderer skyBoxRenderer;
 
     //TODO: Make this more flexible and not a hardcoded value, or some queue so lights can be turned on and off gaining ids / losing
     std::unordered_map<unsigned int, bool> lightStatus;
@@ -76,6 +79,8 @@ public:
      */
     void Draw(const std::shared_ptr<Mesh>& model, const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale);
 
+    //TODO: Make this better by being able to pass in the scene skybox or something
+    void DrawSkyBox();
     /**
      * @brief Ends the current frame.
      *

@@ -82,6 +82,15 @@ void PRISM::Editor::DevelopmentPanel::Display()
                         fmt::println("Failed to set useVertexColour uniform in shader.");
                     }
                 }
+
+                static bool normalDebug = false;
+                if (ImGui::Checkbox("Normal Debugging", &normalDebug))
+                {
+                    if(!Renderer::Get().GetCurrentShader().SetBool("debug_Normal", normalDebug))
+                    {
+                        fmt::println("Failed to set debug_Normal uniform in shader.");
+                    }
+                }
             }
         }
 

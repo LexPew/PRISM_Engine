@@ -6,17 +6,16 @@
 #include <PRISM/Renderer/Plane.h>
 #include <PRISM/Core/AssetManger.h>
 #include <PRISM/Engine/Light.h>
-std::shared_ptr<OrbitalCameraEntity> camera;
-std::shared_ptr<ModelEntity> floorEntity; // Keep floor as a member to skip rotation
-
+#include <fmt/core.h>
 void CubeScene::Start()
 {
-
+    entities.clear();
+    
     camera = std::make_shared<OrbitalCameraEntity>();
     camera->transform.position = {0, 0, 15.0f};
     AddEntity(camera);
 
-    auto cubeMesh = std::make_shared<RubiksCubeExample>();
+    auto cubeMesh = std::make_shared<Cube>();
     auto monkeyMesh = AssetManager::LoadMesh("examples/Monkey.obj");
     auto grassTexture = AssetManager::LoadTexture("examples/Grass.png");
     auto boxTexture = AssetManager::LoadTexture("examples/crate1/crate1_diffuse.png");
@@ -24,17 +23,16 @@ void CubeScene::Start()
     auto plane = std::make_shared<Plane>();
 
     // Floor entity (stationary, scaled up, positioned below cubes)
-    std::shared_ptr<ModelEntity> floorEntity = std::make_shared<ModelEntity>();
+    auto floorEntity = std::make_shared<ModelEntity>();
     floorEntity->SetMesh(plane);
     floorEntity->SetTexture(grassTexture);
     floorEntity->transform.position = {0.0f, -1.0f, 0.0f}; // Move floor down
     floorEntity->transform.scale = {20.0f, 1.0f, 20.0f};   // Scale it up
     AddEntity(floorEntity);
-
     for (int i = 0; i < 3; i++)
     {
         auto light = std::make_shared<Light>(.3f);
-        light->transform.position.x += (-10 +(10 * i));
+        light->transform.position.x += (-10 + (10 * i));
         light->transform.position.y = (i * 5);
         light->SetAttenuation((5 + i * 8));
         AddEntity(light);
@@ -63,10 +61,12 @@ void CubeScene::Start()
 
         newCube->transform.position = {rX, rY, rZ};
         newCube->transform.scale = {1.0f, 1.0f, 1.0f};
-        AddEntity(newCube);
+        AddEntity(std::move(newCube));
     }
 
     Scene::Start();
+
+    
 }
 
 void CubeScene::Update(float deltaTime)
@@ -74,11 +74,12 @@ void CubeScene::Update(float deltaTime)
     for (auto &entity : GetEntities())
     {
         // Skip camera and floor from rotation
-        if (entity.get() != camera.get() && entity->transform.scale != glm::vec3(20.0f, 1.0f, 20.0f))
+        if (entity.get() != camera.get() && entity->transform.scale.x != 20.0f)
         {
             entity->transform.rotation.y += deltaTime * 10.0f;
             entity->transform.rotation.x += deltaTime * 20.0f;
         }
+
     }
 
     Scene::Update(deltaTime);

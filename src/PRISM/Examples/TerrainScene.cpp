@@ -12,12 +12,13 @@
 
 void TerrainScene::Start()
 {
+    sceneLighting.directionalLight.direction = glm::vec3(0.0f,1.0f, 3.1f);
     camera = std::make_shared<OrbitalCameraEntity>();
     AddEntity(camera);
     //Generate a default terrain and point the camera at it
-    GenerateTerrain(TerrainType::PerlinNoise, 500, 500);
+    GenerateTerrain(TerrainType::PerlinNoise, 1500, 1500);
     //Calculate camera position based on terrain size and angle we want to view it from.
-    ResetCameraPosition(500, 500);
+    ResetCameraPosition(1500, 1500);
     
 }
 

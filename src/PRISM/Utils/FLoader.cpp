@@ -13,6 +13,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image/stb_image.h>
+
 std::string FLoader::LoadFile(const std::string &path)
 {
     std::ifstream file(path);
@@ -111,3 +112,5 @@ ImageData FLoader::LoadImage(const std::string &path)
 
     return image;
 }
+
+

@@ -14,8 +14,8 @@ enum class TerrainType
 struct PerlinSettings
 {
     float noiseScale{0.01f};
-    int octaves{4};
-    float amplitude{1.0f};
+    int octaves{5};
+    float amplitude{40.0f};
 };
 
 class TerrainScene : public Scene

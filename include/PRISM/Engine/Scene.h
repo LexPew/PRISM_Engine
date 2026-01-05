@@ -1,10 +1,10 @@
 #pragma once
 #include <PRISM/Engine/Entity.h>
 #include <PRISM/Engine/SceneLighting.h>
+#include <PRISM/Renderer/CubeMap.h>
 #include <glm/vec3.hpp>
 #include <vector>
 #include <memory>
-
 
 
 /**
@@ -28,11 +28,18 @@ protected:
      */
     std::vector<std::shared_ptr<Entity>> entities;
 
+    /**
+     * @brief Optional skybox for the scene.
+     */
+    std::shared_ptr<CubeMap> skybox{nullptr};
+
 public:
     /**
      * @brief Default constructor for the Scene.
      */
     Scene() {};
+
+    ~Scene(){entities.clear();};
 
     /**
      * @brief Called when the scene starts.

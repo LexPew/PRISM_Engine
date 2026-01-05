@@ -9,6 +9,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <fmt/core.h>
 
+
 // TODO: UPDATE THIS TO USE BETTER THAN RUNTIME ERROR AND SORT INCLUDES ETC
 Renderer::Renderer()
 {
@@ -19,6 +20,7 @@ Renderer::Renderer()
 
     currentShader->Initialize();
     currentShader->Enable();
+
 
     if (RenderSettings::testDepth)
         glEnable(GL_DEPTH_TEST);
@@ -72,7 +74,7 @@ void Renderer::SetSceneLighting(const SceneLighting &sceneLighting)
     }
     else
     {
-        fmt::print("Warning: 'ambient_Light' uniform not found in shader.\n");
+        //fmt::print("Warning: 'ambient_Light' uniform not found in shader.\n");
     }
     // Update directional light
     unsigned int directionalLocation = glGetUniformLocation(currentShader->GetProgramId(), "directional_Light");
@@ -82,7 +84,7 @@ void Renderer::SetSceneLighting(const SceneLighting &sceneLighting)
     }
     else
     {
-        fmt::print("Warning: 'directional_Light' uniform not found in shader.\n");
+        //fmt::print("Warning: 'directional_Light' uniform not found in shader.\n");
     }
 }
 void Renderer::Draw(const std::shared_ptr<Mesh> &model, const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale)
@@ -98,6 +100,11 @@ void Renderer::Draw(const std::shared_ptr<Mesh> &model, const glm::vec3 &positio
 
     currentShader->UpdateMatrix(MatrixType::MatrixModel, modelMatrix);
     model->Draw();
+}
+
+void Renderer::DrawSkyBox()
+{
+    skyBoxRenderer.DrawSkyBox(projectionMatrix, viewMatrix);
 }
 
 void Renderer::EndFrame()
@@ -129,18 +136,18 @@ void Renderer::SendLightDetails(const unsigned int lightId, const glm::vec3 &pos
     // Send light position
     if(!currentShader->SetVec3(lightPrefix + ".light_position", position))
     {
-        fmt::print("Warning: '{}' uniform not found in shader.\n", lightPrefix + ".light_position");
+        //fmt::print("Warning: '{}' uniform not found in shader.\n", lightPrefix + ".light_position");
     }
     // Send light intensity
     if(!currentShader->SetFloat(lightPrefix + ".light_intensity", intensity))
     {
-        fmt::print("Warning: '{}' uniform not found in shader.\n", lightPrefix + ".light_intensity");
+        //fmt::print("Warning: '{}' uniform not found in shader.\n", lightPrefix + ".light_intensity");
     }
 
     // Send light attenuation
     if(!currentShader->SetFloat(lightPrefix + ".light_attenuation", attenuation))
     {
-        fmt::print("Warning: '{}' uniform not found in shader.\n", lightPrefix + ".light_attenuation");
+       // fmt::print("Warning: '{}' uniform not found in shader.\n", lightPrefix + ".light_attenuation");
     }
 
 }
@@ -160,7 +167,7 @@ void Renderer::SetLightEnabled(unsigned int lightId, bool enabled)
 
         std::string lightPrefix = "lights[" + std::to_string(lightId) + "]";
         // Send light position
-        int lightActiveLocatoin = glGetUniformLocation(currentShader->GetProgramId(), (lightPrefix + ".active").c_str());
+        int lightActiveLocatoin = glGetUniformLocation(currentShader->GetProgramId(), (lightPrefix + ".light_active").c_str());
         if (lightActiveLocatoin != -1)
         {
             glUniform1i(lightActiveLocatoin, enabled);

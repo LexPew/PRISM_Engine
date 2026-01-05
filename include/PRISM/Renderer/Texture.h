@@ -1,21 +1,34 @@
 #pragma once
 #include <PRISM/Utils/FLoader.h>
 // TODO: Add support for clamp to border
-enum class Wrap { Repeat, Mirrored_Repeat, Clamp };
-enum class Filter { Linear, Nearest };
+enum class Wrap
+{
+    Repeat,
+    Mirrored_Repeat,
+    Clamp
+};
+enum class Filter
+{
+    Linear,
+    Nearest
+};
 class Texture
 {
-private:
-    unsigned int textureID{0};    // GL Texture ID
-    Wrap textureWrap{Wrap::Repeat};     // How image is wrapped, defaults to Repeat
+protected:
+    unsigned int textureID{0};            // GL Texture ID
+    Wrap textureWrap{Wrap::Repeat};       // How image is wrapped, defaults to Repeat
     Filter textureFilter{Filter::Linear}; // How the image is filtered, default to Linear
 
-    bool mipmaps{true};             // Whether mipmaps should be generated, default to true
- 
+    bool mipmaps{true}; // Whether mipmaps should be generated, default to true
 
-    void Initialize(const ImageData &texture);
+    unsigned int ToGLWrap(Wrap wrap);
 
+    unsigned int ToGLFilter(Filter filter);
+
+    Texture() = default;
 public:
+    virtual void Initialize(const ImageData &texture);
+
     static std::shared_ptr<Texture> CreateDefault();
     Texture(const ImageData &p_texture)
     {
@@ -28,9 +41,7 @@ public:
     };
 
     ~Texture();
-    
-    unsigned int GetTextureID(){return textureID;}
-    void Bind();
 
-
+    unsigned int GetTextureID() { return textureID; }
+    virtual void Bind();
 };

@@ -4,6 +4,7 @@
 #include <PRISM/Renderer/Texture.h>
 #include <PRISM/Renderer/Mesh.h>
 #include <PRISM/Utils/FLoader.h>
+#include <PRISM/Renderer/CubeMap.h>
 #include <memory>
 #include <unordered_map>
 #include <string>
@@ -57,4 +58,6 @@ public:
         textures[fullPath] = texture;
         return texture;
     }
+
+   //TODO: CubeMap Loading
 };
