@@ -23,6 +23,6 @@ void ModelEntity::Draw()
     }
     else
     {
-        Renderer::Get().Draw(mesh, transform.position, transform.rotation, transform.scale);
+        Renderer::Get().Draw(mesh, worldMatrix);
     }
 }

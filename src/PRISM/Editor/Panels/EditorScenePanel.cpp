@@ -5,6 +5,81 @@
 
 namespace PRISM::Editor
 {
+    // --- Recursive draw function for the hierarchy ---
+    static void DrawEntityNode(Entity* entity, int& selectedIndex, int& runningIndex)
+    {
+        // Give every visible entity a stable "index" for selection
+        const int myIndex = runningIndex++;
+        const std::string label = "Entity " + std::to_string(myIndex);
+
+        const auto& children = entity->GetChildren();
+        const bool hasChildren = !children.empty();
+
+        ImGuiTreeNodeFlags nodeFlags =
+            ImGuiTreeNodeFlags_OpenOnArrow |
+            ImGuiTreeNodeFlags_SpanAvailWidth;
+
+        if (!hasChildren)
+            nodeFlags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+
+        if (selectedIndex == myIndex)
+            nodeFlags |= ImGuiTreeNodeFlags_Selected;
+
+        // Use pointer as unique ID so ImGui doesn't get confused when order changes
+        const bool opened = ImGui::TreeNodeEx((void*)entity, nodeFlags, "%s", label.c_str());
+
+        // Hover highlight effect (same as your old logic)
+        if (ImGui::IsItemHovered() && selectedIndex != myIndex)
+        {
+            ImDrawList* drawList = ImGui::GetWindowDrawList();
+            ImVec2 min = ImGui::GetItemRectMin();
+            ImVec2 max = ImGui::GetItemRectMax();
+            drawList->AddRectFilled(min, max, IM_COL32(210, 220, 255, 60), 6.0f);
+        }
+
+        if (ImGui::IsItemClicked())
+            selectedIndex = myIndex;
+
+        // If this is selected, show transform controls (even if node isn't opened)
+        if (selectedIndex == myIndex)
+        {
+            ImGui::Indent();
+            ImGui::SeparatorText("Transform");
+
+            auto& tr = entity->GetLocalTransform();
+
+            ImGui::PushItemWidth(-10);
+
+            ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "Position");
+            ImGui::SameLine();
+            if (ImGui::DragFloat3("##pos", &tr.position.x, 0.1f))
+                entity->MarkDirty();
+
+            ImGui::TextColored(ImVec4(0.3f, 1.0f, 0.3f, 1.0f), "Rotation");
+            ImGui::SameLine();
+            if (ImGui::DragFloat3("##rot", &tr.rotation.x, 0.1f))
+                entity->MarkDirty();
+
+            ImGui::TextColored(ImVec4(0.3f, 0.5f, 1.0f, 1.0f), "Scale");
+            ImGui::SameLine();
+            if (ImGui::DragFloat3("##scl", &tr.scale.x, 0.1f))
+                entity->MarkDirty();
+
+            ImGui::PopItemWidth();
+            ImGui::Unindent();
+        }
+
+        // Recurse into children if opened and this node actually pushed
+        if (hasChildren && opened)
+        {
+            for (const auto& childPtr : children)
+            {
+                DrawEntityNode(childPtr.get(), selectedIndex, runningIndex);
+            }
+            ImGui::TreePop();
+        }
+    }
+
     void EditorScenePanel::Panel()
     {
         auto currentScene = SceneManager::Get().GetScene();
@@ -19,7 +94,6 @@ namespace PRISM::Editor
         ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 6.0f);
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8, 8));
         ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.97f, 0.97f, 0.99f, 0.75f));
-       
 
         if (ImGui::CollapsingHeader("Scene Information", ImGuiTreeNodeFlags_DefaultOpen))
         {
@@ -27,7 +101,6 @@ namespace PRISM::Editor
             ImGui::SeparatorText("Active Scene");
             ImGui::Spacing();
 
-     
             ImGui::TextColored(ImVec4(0.30f, 0.55f, 1.0f, 1.0f),
                                "%p", currentScene.get());
             ImGui::Spacing();
@@ -39,11 +112,12 @@ namespace PRISM::Editor
             auto& lightSettings = currentScene->GetSceneLighting();
             ImGui::ColorEdit3("Ambient Colour", &lightSettings.ambientLightColour.x);
             ImGui::Spacing();
-            ImGui::DragFloat3("Directional Light", &lightSettings.directionalLight.direction.x,.1f);
+            ImGui::DragFloat3("Directional Light", &lightSettings.directionalLight.direction.x, .1f);
             ImGui::Separator();
 
             //Scene Specific Panels
             currentScene->Panel();
+
             static bool showHierarchy = false;
             ImGui::Checkbox("Show Scene Hierarchy", &showHierarchy);
 
@@ -52,65 +126,15 @@ namespace PRISM::Editor
                 ImGui::Begin("SceneHierarchyPanel", nullptr);
 
                 auto& entities = currentScene->GetAllEntities();
-                ImGui::TextColored(ImVec4(0.4f, 0.4f, 0.45f, 1.0f), "Entities: %zu", entities.size());
+                ImGui::TextColored(ImVec4(0.4f, 0.4f, 0.45f, 1.0f), "Root Entities: %zu", entities.size());
                 ImGui::Separator();
 
                 static int selectedIndex = -1;
 
-                for (size_t i = 0; i < entities.size(); ++i)
+                int runningIndex = 0;
+                for (const auto& root : entities)
                 {
-                    auto& entity = entities[i];
-                    const std::string label = "Entity " + std::to_string(i);
-
-                    ImGuiTreeNodeFlags nodeFlags = ImGuiTreeNodeFlags_OpenOnArrow |
-                                                   ImGuiTreeNodeFlags_SpanAvailWidth;
-                    if (selectedIndex == static_cast<int>(i))
-                        nodeFlags |= ImGuiTreeNodeFlags_Selected;
-
-                    bool opened = ImGui::TreeNodeEx((void*)(intptr_t)i, nodeFlags, "%s", label.c_str());
-
-                    // Hover highlight effect
-                    if (ImGui::IsItemHovered() && selectedIndex != static_cast<int>(i))
-                    {
-                        ImDrawList* drawList = ImGui::GetWindowDrawList();
-                        ImVec2 min = ImGui::GetItemRectMin();
-                        ImVec2 max = ImGui::GetItemRectMax();
-                        drawList->AddRectFilled(min, max, IM_COL32(210, 220, 255, 60), 6.0f);
-                    }
-
-                    if (ImGui::IsItemClicked())
-                        selectedIndex = static_cast<int>(i);
-
-                    if (opened)
-                    {
-                        ImGui::PushID(static_cast<int>(i));
-                        ImGui::Indent();
-
-                        // === Fancy Transform Section ===
-                        ImGui::SeparatorText("Transform");
-
-                        auto& tr = entity->transform;
-                        ImGui::Spacing();
-
-                        ImGui::PushItemWidth(-10);
-
-                        ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "Position");
-                        ImGui::SameLine();
-                        ImGui::DragFloat3("##pos", &tr.position.x, 0.1f);
-
-                        ImGui::TextColored(ImVec4(0.3f, 1.0f, 0.3f, 1.0f), "Rotation");
-                        ImGui::SameLine();
-                        ImGui::DragFloat3("##rot", &tr.rotation.x, 0.1f);
-
-                        ImGui::TextColored(ImVec4(0.3f, 0.5f, 1.0f, 1.0f), "Scale");
-                        ImGui::SameLine();
-                        ImGui::DragFloat3("##scl", &tr.scale.x, 0.1f);
-
-                        ImGui::PopItemWidth();
-                        ImGui::Unindent();
-                        ImGui::PopID();
-                        ImGui::TreePop();
-                    }
+                    DrawEntityNode(root.get(), selectedIndex, runningIndex);
                 }
 
                 ImGui::End();

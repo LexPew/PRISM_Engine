@@ -9,5 +9,5 @@ void CameraEntity::Update(float deltaTime)
     
 
     //TODO: Update
-    Renderer::Get().GetCurrentShader().SetVec3("view_Position", transform.position);
+    Renderer::Get().GetCurrentShader().SetVec3("view_Position", GetLocalTransform().position);
 }

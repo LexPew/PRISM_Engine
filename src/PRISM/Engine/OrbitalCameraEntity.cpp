@@ -31,10 +31,11 @@ void OrbitalCameraEntity::Update(float deltaTime)
     const glm::vec2& delta = Input::Get().GetMouse().GetMouseDelta();
 
     // Update camera rotation
-    transform.rotation.y += delta.x * turnSpeed * deltaTime;
-    transform.rotation.x -= delta.y * turnSpeed * deltaTime;
-    transform.rotation.x = PMath::Clamp(transform.rotation.x, -89.9f, 89.9f);
+    GetLocalTransform().rotation.y += delta.x * turnSpeed * deltaTime;
+    GetLocalTransform().rotation.x -= delta.y * turnSpeed * deltaTime;
 
+  
+    GetLocalTransform().rotation.x = PMath::Clamp(GetLocalTransform().rotation.x, -89.9f, 89.9f);
 
     // Movement speed (handle sprint)
     float currentMoveSpeed = moveSpeed;
@@ -52,10 +53,11 @@ void OrbitalCameraEntity::Update(float deltaTime)
     {
         move = glm::normalize(move);
 
-        const glm::vec3 forward = transform.forward();
-        const glm::vec3 right   = glm::normalize(transform.right()); //Fixes completey vertical bug
+        const glm::vec3 forward = GetLocalTransform().forward();
+        const glm::vec3 right   = glm::normalize(GetLocalTransform().right()); //Fixes completey vertical bug
 
-        transform.position += (forward * move.z + right * move.x) * currentMoveSpeed * deltaTime;
+        GetLocalTransform().position += (forward * move.z + right * move.x) * currentMoveSpeed * deltaTime;
+ 
     }
 
     CameraEntity::Update(deltaTime);

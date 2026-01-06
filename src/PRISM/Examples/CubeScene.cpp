@@ -7,13 +7,15 @@
 #include <PRISM/Core/AssetManger.h>
 #include <PRISM/Engine/Light.h>
 #include <fmt/core.h>
+
+#include <PRISM/Engine/OrbitalCameraEntity.h>
 void CubeScene::Start()
 {
     entities.clear();
     
-    camera = std::make_shared<OrbitalCameraEntity>();
-    camera->transform.position = {0, 0, 15.0f};
-    AddEntity(camera);
+    // Camera is a root-level entity owned by the scene
+
+    EmplaceEntity(std::make_unique<OrbitalCameraEntity>());
 
     auto cubeMesh = std::make_shared<Cube>();
     auto monkeyMesh = AssetManager::LoadMesh("examples/Monkey.obj");
@@ -22,26 +24,41 @@ void CubeScene::Start()
 
     auto plane = std::make_shared<Plane>();
 
-    // Floor entity (stationary, scaled up, positioned below cubes)
-    auto floorEntity = std::make_shared<ModelEntity>();
-    floorEntity->SetMesh(plane);
-    floorEntity->SetTexture(grassTexture);
-    floorEntity->transform.position = {0.0f, -1.0f, 0.0f}; // Move floor down
-    floorEntity->transform.scale = {20.0f, 1.0f, 20.0f};   // Scale it up
-    AddEntity(floorEntity);
+    // Environment root (owns floor and lights)
+    auto environmentRoot = std::make_unique<Entity>();
+
+    // Floor entity (child of environment)
+    {
+        auto floorEntity = std::make_unique<ModelEntity>();
+        floorEntity->SetMesh(plane);
+        floorEntity->SetTexture(grassTexture);
+        floorEntity->GetLocalTransform().position = {0.0f, -1.0f, 0.0f}; // Move floor down
+        floorEntity->GetLocalTransform().scale = {20.0f, 1.0f, 20.0f};   // Scale it up
+        environmentRoot->AddChild(std::move(floorEntity));
+    }
+    auto lightRoot = std::make_unique<Entity>();
+    // Lights (children of environment)
     for (int i = 0; i < 3; i++)
     {
-        auto light = std::make_shared<Light>(.3f);
-        light->transform.position.x += (-10 + (10 * i));
-        light->transform.position.y = (i * 5);
+        auto light = std::make_unique<Light>(.3f);
+        light->GetLocalTransform().position.x += (-10 + (10 * i));
+        light->GetLocalTransform().position.y = (i * 5);
         light->SetAttenuation((5 + i * 8));
-        AddEntity(light);
+        lightRoot->AddChild(std::move(light));
     }
 
-    // Spawn random cubes
+    // Add environment root to scene
+    EmplaceEntity(std::move(environmentRoot));
+    // Add light root to scene
+    EmplaceEntity(std::move(lightRoot));
+
+    // Objects root (owns the random cubes/monkeys)
+    auto objectsRoot = std::make_unique<Entity>();
+
+    // Spawn random cubes/monkeys under objects root
     for (int i = 0; i < 10; i++)
     {
-        auto newCube = std::make_shared<ModelEntity>();
+        auto newObject = std::make_unique<ModelEntity>();
 
         float rX = PMath::RandomRange(-5, 5);
         float rY = PMath::RandomRange(0, 5); // Above floor
@@ -50,37 +67,26 @@ void CubeScene::Start()
         float rand = PMath::RandomRange(0.0f, 1.0f);
         if (rand >= .5f)
         {
-
-            newCube->SetMesh(cubeMesh);
-            newCube->SetTexture(boxTexture);
+            newObject->SetMesh(cubeMesh);
+            newObject->SetTexture(boxTexture);
         }
         else
         {
-            newCube->SetMesh(monkeyMesh);
+            newObject->SetMesh(monkeyMesh);
         }
 
-        newCube->transform.position = {rX, rY, rZ};
-        newCube->transform.scale = {1.0f, 1.0f, 1.0f};
-        AddEntity(std::move(newCube));
+        newObject->GetLocalTransform().position = {rX, rY, rZ};
+        newObject->GetLocalTransform().scale = {1.0f, 1.0f, 1.0f};
+        objectsRoot->AddChild(std::move(newObject));
     }
 
-    Scene::Start();
+    // Add objects root to scene
+    EmplaceEntity(std::move(objectsRoot));
 
-    
+    Scene::Start();
 }
 
 void CubeScene::Update(float deltaTime)
 {
-    for (auto &entity : GetEntities())
-    {
-        // Skip camera and floor from rotation
-        if (entity.get() != camera.get() && entity->transform.scale.x != 20.0f)
-        {
-            entity->transform.rotation.y += deltaTime * 10.0f;
-            entity->transform.rotation.x += deltaTime * 20.0f;
-        }
-
-    }
-
     Scene::Update(deltaTime);
 }

@@ -5,9 +5,6 @@
 class CubeScene : public Scene
 {
 private:
-//Non rotating camera and floor
-    std::shared_ptr<OrbitalCameraEntity> camera{nullptr};
-
 public:
     CubeScene() {};
 

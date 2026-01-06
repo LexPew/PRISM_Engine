@@ -24,9 +24,9 @@ protected:
     SceneLighting sceneLighting;
 
     /**
-     * @brief List of all entities currently in the scene.
+     * @brief List of all entities currently in the scene. These are owned by the scene and are root-level entities.
      */
-    std::vector<std::shared_ptr<Entity>> entities;
+    std::vector<std::unique_ptr<Entity>> entities;
 
     /**
      * @brief Optional skybox for the scene.
@@ -69,20 +69,23 @@ public:
      * @brief Adds a new entity to the scene.
      * @param entity Shared pointer to the entity to add.
      */
-    virtual void AddEntity(const std::shared_ptr<Entity> &entity) { entities.push_back(entity); }
+    virtual void EmplaceEntity(std::unique_ptr<Entity> entity)
+    {
+        entities.push_back(std::move(entity));
+    };
 
     /**
      * @brief Returns a reference to the list of entities.
      * @return Reference to the internal entities vector.
      */
-    std::vector<std::shared_ptr<Entity>> &GetEntities() { return entities; };
+    std::vector<std::unique_ptr<Entity>> &GetEntities() { return entities; }
 
     /**
      * @brief Returns all entities in the scene.
      * Alias for GetEntities() for clarity.
      * @return Reference to the internal entities vector.
      */
-    std::vector<std::shared_ptr<Entity>> &GetAllEntities() { return entities; }
+    std::vector<std::unique_ptr<Entity>> &GetAllEntities() { return entities; }
 
     /**
      * @brief Retrieves the current scene lighting.

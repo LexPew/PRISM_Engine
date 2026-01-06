@@ -9,7 +9,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <fmt/core.h>
 
-
 // TODO: UPDATE THIS TO USE BETTER THAN RUNTIME ERROR AND SORT INCLUDES ETC
 Renderer::Renderer()
 {
@@ -21,17 +20,16 @@ Renderer::Renderer()
     currentShader->Initialize();
     currentShader->Enable();
 
-
     if (RenderSettings::testDepth)
         glEnable(GL_DEPTH_TEST);
 }
 
 void Renderer::Initialize()
 {
-    
+
     for (int i = 0; i < maxLights; i++)
     {
-        lightStatus.insert(std::make_pair(i,true));
+        lightStatus.insert(std::make_pair(i, true));
         SetLightEnabled(i, false);
     }
 }
@@ -55,8 +53,10 @@ void Renderer::SendCameraMatrices(const CameraEntity *camera)
 
     projectionMatrix = projectionMatrix;
 
-    glm::vec3 targetPosition = camera->transform.position + camera->transform.forward();
-    viewMatrix = glm::lookAt(camera->transform.position, targetPosition, {0, 1, 0});
+    glm::vec3 targetPosition = camera->GetLocalTransform().position + camera->GetLocalTransform().forward();
+    viewMatrix = glm::lookAt((camera->GetLocalTransform().position),
+                             targetPosition,
+                             glm::vec3(0, 1, 0));
 
     currentShader->UpdateMatrix(MatrixType::MatrixProjection, projectionMatrix);
     currentShader->UpdateMatrix(MatrixType::MatrixView, viewMatrix);
@@ -74,7 +74,7 @@ void Renderer::SetSceneLighting(const SceneLighting &sceneLighting)
     }
     else
     {
-        //fmt::print("Warning: 'ambient_Light' uniform not found in shader.\n");
+        // fmt::print("Warning: 'ambient_Light' uniform not found in shader.\n");
     }
     // Update directional light
     unsigned int directionalLocation = glGetUniformLocation(currentShader->GetProgramId(), "directional_Light");
@@ -84,21 +84,14 @@ void Renderer::SetSceneLighting(const SceneLighting &sceneLighting)
     }
     else
     {
-        //fmt::print("Warning: 'directional_Light' uniform not found in shader.\n");
+        // fmt::print("Warning: 'directional_Light' uniform not found in shader.\n");
     }
 }
-void Renderer::Draw(const std::shared_ptr<Mesh> &model, const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale)
+void Renderer::Draw(const std::shared_ptr<Mesh> &model, const glm::mat4 &worldMatrix)
 {
     currentShader->Enable();
 
-    glm::mat4 modelMatrix(1.0f);
-    modelMatrix = glm::translate(modelMatrix, position);
-    modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation.x), {1, 0, 0});
-    modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation.y), {0, 1, 0});
-    modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation.z), {0, 0, 1});
-    modelMatrix = glm::scale(modelMatrix, scale);
-
-    currentShader->UpdateMatrix(MatrixType::MatrixModel, modelMatrix);
+    currentShader->UpdateMatrix(MatrixType::MatrixModel, worldMatrix);
     model->Draw();
 }
 
@@ -127,43 +120,43 @@ int Renderer::RequestLightId()
     return -1;
 }
 
-void Renderer::SendLightDetails(const unsigned int lightId, const glm::vec3 &position, const float intensity,const float attenuation)
+void Renderer::SendLightDetails(const unsigned int lightId, const glm::mat4 worldMatrix, const float intensity, const float attenuation)
 {
-    //TODO: Make easy set bool float etc in shader WRAPPERS
-    // Build the uniform name for this light
+    // TODO: Make easy set bool float etc in shader WRAPPERS
+    //  Build the uniform name for this light
     std::string lightPrefix = "lights[" + std::to_string(lightId) + "]";
 
+    // Extract position from world matrix
+    glm::vec3 position = glm::vec3(worldMatrix[3]); // (x,y,z) from translation column
+
     // Send light position
-    if(!currentShader->SetVec3(lightPrefix + ".light_position", position))
+    if (!currentShader->SetVec3(lightPrefix + ".light_position", position))
     {
-        //fmt::print("Warning: '{}' uniform not found in shader.\n", lightPrefix + ".light_position");
+        // fmt::print("Warning: '{}' uniform not found in shader.\n", lightPrefix + ".light_position");
     }
     // Send light intensity
-    if(!currentShader->SetFloat(lightPrefix + ".light_intensity", intensity))
+    if (!currentShader->SetFloat(lightPrefix + ".light_intensity", intensity))
     {
-        //fmt::print("Warning: '{}' uniform not found in shader.\n", lightPrefix + ".light_intensity");
+        // fmt::print("Warning: '{}' uniform not found in shader.\n", lightPrefix + ".light_intensity");
     }
 
     // Send light attenuation
-    if(!currentShader->SetFloat(lightPrefix + ".light_attenuation", attenuation))
+    if (!currentShader->SetFloat(lightPrefix + ".light_attenuation", attenuation))
     {
-       // fmt::print("Warning: '{}' uniform not found in shader.\n", lightPrefix + ".light_attenuation");
+        // fmt::print("Warning: '{}' uniform not found in shader.\n", lightPrefix + ".light_attenuation");
     }
-
 }
 
 void Renderer::SetLightEnabled(unsigned int lightId, bool enabled)
 {
     if (lightId < maxLights)
     {
-     // Update internal light status
-    auto lightIt = lightStatus.find(lightId);
-    if (lightIt != lightStatus.end())
-    {
-        lightIt->second = enabled;
-    }
-
-
+        // Update internal light status
+        auto lightIt = lightStatus.find(lightId);
+        if (lightIt != lightStatus.end())
+        {
+            lightIt->second = enabled;
+        }
 
         std::string lightPrefix = "lights[" + std::to_string(lightId) + "]";
         // Send light position

@@ -77,7 +77,7 @@ public:
      * @param rotation Euler rotation (in degrees).
      * @param scale Scale factor of the mesh.
      */
-    void Draw(const std::shared_ptr<Mesh>& model, const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale);
+    void Draw(const std::shared_ptr<Mesh>& model, const glm::mat4& worldMatrix);
 
     //TODO: Make this better by being able to pass in the scene skybox or something
     void DrawSkyBox();
@@ -94,7 +94,7 @@ public:
     int RequestLightId();
 
     //TODO: Eventually Move To Structs and better management
-    void SendLightDetails(const unsigned int lightId, const glm::vec3& position, const float intensity, const float attenuation);
+    void SendLightDetails(const unsigned int lightId, const glm::mat4 worldMatrix, const float intensity, const float attenuation);
     void SetLightEnabled(unsigned int lightId, bool enabled);
      Shader& GetCurrentShader() const { return *currentShader; };
 
