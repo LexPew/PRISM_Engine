@@ -1,4 +1,4 @@
-# OpenGLEngine
+# PRISM Engine
 
 This is a small opengl based renderer that I'm making for a school project in which we have to,
 show off rendering a cube, textures, lighting and a small scene
